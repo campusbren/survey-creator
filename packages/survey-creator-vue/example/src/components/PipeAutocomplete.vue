@@ -12,6 +12,10 @@ const showPanel = ref(true);
 const focusedInput = ref(null);
 const searchText = ref('');
 const panelContainer = ref(null);
+const panelX = ref(10);
+const panelY = ref(10);
+const isDragging = ref(false);
+const dragStart = ref({ x: 0, y: 0 });
 
 const availableFields = computed(() => {
   const fields = [];
@@ -81,8 +85,27 @@ const setupFocusTracking = () => {
   };
 };
 
+const startDrag = (e) => {
+  // Only drag from header, not from buttons
+  if (e.target.tagName === 'BUTTON') return;
+  isDragging.value = true;
+  dragStart.value = { x: e.clientX - panelX.value, y: e.clientY - panelY.value };
+};
+
+const doDrag = (e) => {
+  if (!isDragging.value) return;
+  panelX.value = e.clientX - dragStart.value.x;
+  panelY.value = e.clientY - dragStart.value.y;
+};
+
+const stopDrag = () => {
+  isDragging.value = false;
+};
+
 onMounted(() => {
   setupFocusTracking();
+  document.addEventListener('mousemove', doDrag);
+  document.addEventListener('mouseup', stopDrag);
 });
 
 const insertField = (fieldName) => {
@@ -111,27 +134,30 @@ const insertField = (fieldName) => {
 </script>
 
 <template>
-  <div ref="panelContainer" v-if="showPanel" style="
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: white;
-    border: 2px solid #1ab394;
-    border-radius: 6px;
-    padding: 15px;
-    width: 280px;
-    max-height: 400px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    z-index: 10000;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  ">
-    <div style="
+  <div ref="panelContainer" v-if="showPanel" :style="{
+    position: 'fixed',
+    top: panelY + 'px',
+    left: panelX + 'px',
+    background: 'white',
+    border: '2px solid #1ab394',
+    borderRadius: '6px',
+    padding: '15px',
+    width: '280px',
+    maxHeight: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+    zIndex: 10000,
+    fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    userSelect: isDragging ? 'none' : 'auto',
+    cursor: isDragging ? 'grabbing' : 'auto'
+  }">
+    <div @mousedown="startDrag" style="
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      cursor: grab;
     ">
       <h3 style="
         margin: 0;
