@@ -220,7 +220,8 @@ const insertField = (fieldName) => {
       <button
         v-for="field in filteredFields"
         :key="field"
-        @click="insertField(field)"
+        @click.stop="insertField(field)"
+        @mousedown.prevent
         style="
           width: 100%;
           text-align: left;
