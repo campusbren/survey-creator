@@ -34,7 +34,9 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - Configured the Vue 3 example to use npm packages instead of local builds
 - Updated dependencies to use published npm packages (survey-core@2.3.16, survey-vue3-ui@2.3.16, survey-creator-core@2.3.16, survey-creator-vue@2.3.16)
 - Configured Vite to run on port 5000 with host 0.0.0.0
+- Added critical `allowedHosts: true` setting to vite.config.ts for Replit's proxy environment
 - Added HMR configuration for Replit's proxy environment
+- Installed @tsconfig/node16 devDependency to resolve TypeScript configuration
 - Set up workflow to run the development server
 - Configured deployment for autoscale deployment target
 
