@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps({
   creator: {
@@ -11,12 +11,8 @@ const props = defineProps({
 const showPanel = ref(true);
 const focusedInput = ref(null);
 const searchText = ref('');
-const refreshKey = ref(0);
 
 const availableFields = computed(() => {
-  // Include refreshKey in dependency to trigger updates
-  refreshKey.value;
-  
   const fields = [];
   if (props.creator.survey && props.creator.survey.pages) {
     props.creator.survey.pages.forEach(page => {
@@ -32,31 +28,11 @@ const availableFields = computed(() => {
   return [...new Set(fields)].sort();
 });
 
-// Watch for changes in survey pages array
-watch(
-  () => props.creator.survey?.pages,
-  () => {
-    refreshKey.value++;
-  },
-  { deep: true }
-);
-
-// Also watch for changes to individual page elements
-watch(
-  () => props.creator.survey?.pages?.flatMap(p => p.elements),
-  () => {
-    refreshKey.value++;
-  },
-  { deep: true }
-);
-
 const filteredFields = computed(() => {
   if (!searchText.value) return availableFields.value;
   const search = searchText.value.toLowerCase();
   return availableFields.value.filter(f => f.toLowerCase().includes(search));
 });
-
-let focusObserver = null;
 
 const setupFocusTracking = () => {
   // Track which input has focus
