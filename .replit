@@ -39,5 +39,5 @@ externalPort = 3000
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["npm", "run", "preview", "--prefix", "packages/survey-creator-vue/example"]
-build = ["npm", "install", "--prefix", "packages/survey-creator-vue/example", "&&", "npm", "run", "build", "--prefix", "packages/survey-creator-vue/example"]
+run = ["sh", "-c", "cd packages/survey-creator-vue/example && npm run preview"]
+build = ["sh", "-c", "cd packages/survey-creator-vue/example && npm install && npm run build"]
