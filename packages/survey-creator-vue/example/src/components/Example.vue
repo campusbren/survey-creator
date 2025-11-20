@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { SurveyCreatorModel } from 'survey-creator-core';
+import PipeAutocomplete from './PipeAutocomplete.vue';
+
 const creator = new SurveyCreatorModel({ pageEditMode: "bypage", showLogicTab: true, showJSONEditorTab: true, showTranslationTab: true, showThemeTab: true });
 creator.toolbox.searchEnabled = false;
 creator.toolbox.overflowBehavior = "hideInMenu";
@@ -70,5 +72,6 @@ import { SurveyCreatorComponent } from "survey-creator-vue";
 <template>
     <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh">
         <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
+        <PipeAutocomplete :creator="creator" />
     </div>
 </template>
