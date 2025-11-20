@@ -14,6 +14,15 @@ export default defineConfig(({ command }) => {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       }
+    },
+    server: {
+      host: '0.0.0.0',
+      port: 5000,
+      strictPort: true,
+      hmr: {
+        clientPort: 443,
+        protocol: 'wss'
+      }
     }
-}
+  }
 })
