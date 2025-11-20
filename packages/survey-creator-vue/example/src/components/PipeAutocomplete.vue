@@ -129,7 +129,12 @@ const insertField = (fieldName) => {
   input.dispatchEvent(new Event('input', { bubbles: true }));
   input.dispatchEvent(new Event('change', { bubbles: true }));
   
-  focusedInput.value.focus();
+  // Refocus after all events have processed
+  requestAnimationFrame(() => {
+    input.focus();
+    // Restore cursor position
+    input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
+  });
 };
 </script>
 
