@@ -12,6 +12,31 @@ creator.survey.onTextMarkdown.add((survey, options) => {
   options.html = options.text;
 });
 
+// Add CSS for rating labels positioned below
+const style = document.createElement('style');
+style.textContent = `
+  .sv-q-rating.rating-labels-below .sv-q-rating-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .sv-q-rating.rating-labels-below .sv-q-rating-item-text {
+    order: 2;
+    font-size: 12px;
+    margin-top: 4px;
+    white-space: normal;
+    width: 100%;
+  }
+  
+  .sv-q-rating.rating-labels-below .sv-q-rating-item-content {
+    order: 1;
+  }
+`;
+document.head.appendChild(style);
+
 // Initialize with a sample survey demonstrating page title piping
 const sampleSurvey = {
   pages: [
@@ -47,6 +72,16 @@ const sampleSurvey = {
           type: "text",
           name: "company",
           title: "What company does {firstName} work for?"
+        },
+        {
+          type: "rating",
+          name: "jobSatisfaction",
+          title: "How satisfied are you with this role?",
+          rateCount: 5,
+          choices: ["Very Unsatisfied", "Unsatisfied", "Neutral", "Satisfied", "Very Satisfied"],
+          cssClasses: {
+            root: "rating-labels-below"
+          }
         }
       ]
     },
