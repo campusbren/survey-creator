@@ -108,7 +108,10 @@ onMounted(() => {
   document.addEventListener('mouseup', stopDrag);
 });
 
-const insertField = (fieldName) => {
+const insertField = (e, fieldName) => {
+  // Prevent button from getting focus
+  e.preventDefault();
+  
   if (!focusedInput.value) {
     alert('Click on a text input field first, then select a field to pipe.');
     return;
@@ -129,12 +132,9 @@ const insertField = (fieldName) => {
   input.dispatchEvent(new Event('input', { bubbles: true }));
   input.dispatchEvent(new Event('change', { bubbles: true }));
   
-  // Refocus after all events have processed
-  requestAnimationFrame(() => {
-    input.focus();
-    // Restore cursor position
-    input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
-  });
+  // Refocus the original input
+  input.focus();
+  input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
 };
 </script>
 
@@ -225,8 +225,8 @@ const insertField = (fieldName) => {
       <button
         v-for="field in filteredFields"
         :key="field"
-        @click.stop="insertField(field)"
-        @mousedown.prevent
+        tabindex="-1"
+        @mousedown="insertField($event, field)"
         style="
           width: 100%;
           text-align: left;
