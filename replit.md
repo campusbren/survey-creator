@@ -1,0 +1,114 @@
+# SurveyJS Creator Demo
+
+## Overview
+
+This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop form builder that allows you to design dynamic JSON-based forms directly in your browser. SurveyJS Creator is a powerful client-side tool with native support for React, Angular, Vue, and Knockout frameworks.
+
+**Current State:** Fully configured and running on Replit with Vue 3 example application.
+
+**Demo URL:** The application runs on port 5000 and displays the SurveyJS Creator interface.
+
+## Project Information
+
+- **Project Name:** SurveyJS Survey Creator
+- **Type:** Monorepo with multiple framework implementations (React, Vue, Angular, Knockout)
+- **Current Setup:** Vue 3 example application
+- **Framework:** Vue 3 + Vite
+- **Port:** 5000
+- **Language:** TypeScript, JavaScript
+
+## Features
+
+- Drag-and-drop form builder interface
+- Visual form designer with live preview
+- Theme editor for customizing form appearance
+- Logic and conditional branching editor
+- JSON schema generation
+- Multiple question types (rating, dropdown, checkboxes, etc.)
+- Survey settings panel
+- Test/Preview mode
+
+## Recent Changes (November 20, 2025)
+
+### Initial Replit Setup
+- Configured the Vue 3 example to use npm packages instead of local builds
+- Updated dependencies to use published npm packages (survey-core@2.3.16, survey-vue3-ui@2.3.16, survey-creator-core@2.3.16, survey-creator-vue@2.3.16)
+- Configured Vite to run on port 5000 with host 0.0.0.0
+- Added HMR configuration for Replit's proxy environment
+- Set up workflow to run the development server
+- Configured deployment for autoscale deployment target
+
+## Project Architecture
+
+### Directory Structure
+```
+survey-creator/
+├── packages/
+│   ├── survey-creator-core/      # Core creator functionality
+│   ├── survey-creator-vue/        # Vue 3 wrapper
+│   │   └── example/               # Demo application (currently running)
+│   ├── survey-creator-react/      # React wrapper
+│   ├── survey-creator-angular/    # Angular wrapper
+│   └── survey-creator-js/         # Plain JavaScript wrapper
+├── docs/                          # Documentation
+├── functionalTests/               # Test suites
+└── package.json                   # Root package configuration
+```
+
+### Key Technologies
+- **Vue 3**: Frontend framework
+- **Vite**: Build tool and dev server
+- **TypeScript**: Type-safe development
+- **SurveyJS**: Form rendering engine
+- **Bootstrap 3**: UI styling
+
+## Development
+
+### Running the Application
+The application is configured to run automatically via the "SurveyJS Creator Demo" workflow.
+
+**Manual run:**
+```bash
+cd packages/survey-creator-vue/example
+npm run dev
+```
+
+### Building for Production
+```bash
+cd packages/survey-creator-vue/example
+npm run build
+npm run preview
+```
+
+### Configuration Files
+- `packages/survey-creator-vue/example/vite.config.ts` - Vite configuration with Replit proxy settings
+- `packages/survey-creator-vue/example/package.json` - Dependencies and scripts
+
+## Deployment
+
+The project is configured for autoscale deployment:
+- **Build command:** Installs dependencies and builds the Vue example
+- **Run command:** Runs the Vite preview server on port 5000
+- **Deployment type:** Autoscale (stateless web application)
+
+## Licensing
+
+**Important:** SurveyJS Creator is **not available for free commercial usage**. A commercial license is required for production use. However, you can:
+- Use the free demo to generate form configurations
+- Render generated forms with SurveyJS Form Library (MIT licensed) for free
+
+## Additional Resources
+
+- [SurveyJS Documentation](https://surveyjs.io/survey-creator/documentation/overview)
+- [GitHub Repository](https://github.com/surveyjs/survey-creator)
+- [Live Demo](https://surveyjs.io/create-free-survey)
+- [Licensing Information](https://surveyjs.io/licensing)
+
+## Notes
+
+### Dependencies
+The example uses published npm packages rather than local builds from the monorepo. This simplifies setup and ensures stable versions are used.
+
+### Known Limitations
+- HMR (Hot Module Replacement) WebSocket connection warnings appear in the browser console but don't affect functionality
+- The monorepo structure includes multiple framework implementations, but only the Vue example is currently configured to run
