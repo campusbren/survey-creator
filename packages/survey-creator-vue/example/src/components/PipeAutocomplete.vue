@@ -11,6 +11,7 @@ const props = defineProps({
 const showPanel = ref(true);
 const focusedInput = ref(null);
 const searchText = ref('');
+const panelContainer = ref(null);
 
 const availableFields = computed(() => {
   const fields = [];
@@ -34,9 +35,24 @@ const filteredFields = computed(() => {
   return availableFields.value.filter(f => f.toLowerCase().includes(search));
 });
 
+const isInsidePanel = (target) => {
+  // Check if the target or any parent is inside the panel
+  let el = target;
+  while (el && el !== document) {
+    if (el === panelContainer.value) {
+      return true;
+    }
+    el = el.parentElement;
+  }
+  return false;
+};
+
 const setupFocusTracking = () => {
   // Track which input has focus using focusin (bubbles better than focus)
   const trackFocus = (e) => {
+    // Don't update if clicking inside the Field Piping panel
+    if (isInsidePanel(e.target)) return;
+    
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
       focusedInput.value = e.target;
       searchText.value = '';
@@ -48,6 +64,9 @@ const setupFocusTracking = () => {
   
   // Also track click events on inputs as fallback
   const trackClick = (e) => {
+    // Don't update if clicking inside the Field Piping panel
+    if (isInsidePanel(e.target)) return;
+    
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
       focusedInput.value = e.target;
       searchText.value = '';
@@ -92,7 +111,7 @@ const insertField = (fieldName) => {
 </script>
 
 <template>
-  <div v-if="showPanel" style="
+  <div ref="panelContainer" v-if="showPanel" style="
     position: fixed;
     top: 10px;
     left: 10px;
