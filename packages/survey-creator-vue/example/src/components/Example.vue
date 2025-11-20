@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { SurveyCreatorModel } from 'survey-creator-core';
-import QuestionChainManager from './QuestionChainManager.vue';
-
 const creator = new SurveyCreatorModel({ pageEditMode: "bypage", showLogicTab: true, showJSONEditorTab: true, showTranslationTab: true, showThemeTab: true });
 creator.toolbox.searchEnabled = false;
 creator.toolbox.overflowBehavior = "hideInMenu";
@@ -12,7 +10,7 @@ creator.survey.onTextMarkdown.add((survey, options) => {
   options.html = options.text;
 });
 
-// Initialize with a sample survey demonstrating page title piping and question chains
+// Initialize with a sample survey demonstrating page title piping
 const sampleSurvey = {
   pages: [
     {
@@ -72,6 +70,5 @@ import { SurveyCreatorComponent } from "survey-creator-vue";
 <template>
     <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh">
         <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
-        <QuestionChainManager :creator="creator" />
     </div>
 </template>
