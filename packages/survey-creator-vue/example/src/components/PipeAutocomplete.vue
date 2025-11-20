@@ -35,18 +35,30 @@ const filteredFields = computed(() => {
 });
 
 const setupFocusTracking = () => {
-  // Track which input has focus
+  // Track which input has focus using focusin (bubbles better than focus)
   const trackFocus = (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
       focusedInput.value = e.target;
       searchText.value = '';
     }
   };
 
-  document.addEventListener('focus', trackFocus, true);
+  // Use focusin which bubbles and works better in nested contexts
+  document.addEventListener('focusin', trackFocus);
+  
+  // Also track click events on inputs as fallback
+  const trackClick = (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+      focusedInput.value = e.target;
+      searchText.value = '';
+    }
+  };
+  
+  document.addEventListener('click', trackClick, true);
 
   return () => {
-    document.removeEventListener('focus', trackFocus, true);
+    document.removeEventListener('focusin', trackFocus);
+    document.removeEventListener('click', trackClick, true);
   };
 };
 
