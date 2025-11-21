@@ -113,6 +113,20 @@ onMounted(() => {
   setupFocusTracking();
   document.addEventListener('mousemove', doDrag);
   document.addEventListener('mouseup', stopDrag);
+  
+  // Prevent SurveyJS from closing the active editor when clicking the panel
+  // SurveyJS has global pointerdown listeners that close editors on "outside" clicks
+  if (panelContainer.value) {
+    panelContainer.value.addEventListener('pointerdown', (e) => {
+      // Stop the event from reaching SurveyJS' global handlers
+      e.stopPropagation();
+    }, true); // Use capture phase
+    
+    panelContainer.value.addEventListener('click', (e) => {
+      // Also stop click events
+      e.stopPropagation();
+    }, true); // Use capture phase
+  }
 });
 
 const insertField = (e, fieldName) => {
