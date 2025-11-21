@@ -50,14 +50,16 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 ### UI/UX Improvements
 - Fixed navigation bar visibility by removing fixed positioning from Example.vue
 - Navigation bar now properly displays across all routes without overlay issues
-- **Show Fields Button**: Added to top toolbar for easy access
+- **Show Fields Button**: Added to top toolbar (left sidebar not possible with SurveyJS public API)
   - "🔗 Show Fields" button appears in the main toolbar
   - Toggles Field Piping Sidebar on/off
   - Implemented using SurveyJS Creator's toolbar actions API (`creator.toolbar.actions.push()`)
   - Clean integration without custom component overrides
+  - **Note**: Cannot be added to left vertical sidebar - `SideBarPageModel` is not exported by SurveyJS
 - Field Piping panel slides in from the right with fixed positioning
 - Simplified layout with clean CSS approach
 - Clean, professional interface without excessive layout overrides
+- Removed `onTextMarkdown` handler that was interfering with text piping functionality
 
 ### CSV Survey Tool Added
 - Created Express backend server (port 3001) with API endpoints for survey responses

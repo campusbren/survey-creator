@@ -10,27 +10,27 @@ creator.toolbox.searchEnabled = false;
 creator.toolbox.overflowBehavior = "hideInMenu";
 creator.expandCollapseButtonVisibility = "onhover";
 
+const showFieldPiping = ref(false);
 const showCsvImport = ref(false);
 const canImportCsv = ref(false);
 
-// Import SideBarPageModel to add to the left sidebar
-import { SideBarPageModel } from 'survey-creator-core';
-
-// Add "Show Fields" to the left sidebar (icon rail)
-const fieldPipingPage = new SideBarPageModel({
-  id: "field-piping",
-  title: "Show Fields", 
-  tooltip: "Insert field references",
-  iconName: "icon-link",
-  component: "field-piping-sidebar-page",
-  componentData: { creator: creator }
+// Add "Show Fields" button to the top toolbar (left sidebar not possible with current SurveyJS API)
+const fieldPipingAction = new Action({
+  id: "show-fields",
+  title: "🔗 Show Fields",
+  tooltip: "Insert field references (piping)",
+  visible: true,
+  action: () => {
+    showFieldPiping.value = !showFieldPiping.value;
+    console.log('Show Fields toggled, showFieldPiping:', showFieldPiping.value);
+  }
 });
 
-creator.sideBar.addPage(fieldPipingPage);
+creator.toolbar.actions.push(fieldPipingAction);
 
 // Provide close function for FieldPipingSidebar
 provide('closeFieldPiping', () => {
-  fieldPipingPage.visible = false;
+  showFieldPiping.value = false;
   console.log('Field Piping Sidebar closed');
 });
 
@@ -55,11 +55,6 @@ creator.onPropertyChanged.add((sender, options) => {
     const element = sender.selectedElement;
     canImportCsv.value = !!(element && 'choices' in element);
   }
-});
-
-// Enable dynamic text expressions in page titles and descriptions
-creator.survey.onTextMarkdown.add((survey, options) => {
-  options.html = options.text;
 });
 
 // Add CSS for rating labels positioned below
