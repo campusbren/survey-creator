@@ -29,6 +29,20 @@ const csvImportAction = new Action({
 
 creator.toolbar.actions.push(csvImportAction);
 
+// Inject Show Fields button into the property panel
+setTimeout(() => {
+  const propertyPanel = document.querySelector('.svc-property-panel');
+  if (propertyPanel) {
+    const showFieldsBtn = document.createElement('button');
+    showFieldsBtn.className = 'show-fields-property-btn';
+    showFieldsBtn.innerHTML = '🔗 Show Fields';
+    showFieldsBtn.onclick = () => {
+      showFieldPiping.value = !showFieldPiping.value;
+    };
+    propertyPanel.appendChild(showFieldsBtn);
+  }
+}, 1000);
+
 // Monitor for when user selects a question with choices
 creator.onPropertyChanged.add((sender, options) => {
   if (options.name === 'selectedElement') {
@@ -180,21 +194,19 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
     <div class="creator-host">
         <div class="creator-wrapper">
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
+          
+          <!-- Show Fields Panel Injected into Property Panel -->
+          <div id="show-fields-panel-injection"></div>
         </div>
         
-        <!-- Show Fields in Property Grid -->
-        <div class="show-fields-in-grid">
-          <button @click="showFieldPiping = !showFieldPiping" class="show-fields-toggle-btn" title="Toggle field references panel">
-            🔗 Show Fields
-          </button>
-          <FieldPipingSidebar 
-            v-if="showFieldPiping"
-            :creator="creator" 
-            :isOpen="true"
-            @toggle="showFieldPiping = false"
-            @close="showFieldPiping = false" 
-          />
-        </div>
+        <!-- Show Fields Sidebar Content -->
+        <FieldPipingSidebar 
+          v-if="showFieldPiping"
+          :creator="creator" 
+          :isOpen="true"
+          @toggle="showFieldPiping = false"
+          @close="showFieldPiping = false" 
+        />
 
         <!-- CSV Import Panel (modal) - triggered via toolbar when choices panel is active -->
         <CsvImportPanel 
@@ -228,28 +240,22 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   flex-direction: column;
 }
 
-.show-fields-in-grid {
-  position: fixed;
-  right: 20px;
-  top: 125px;
-  z-index: 1000;
-}
-
-.show-fields-toggle-btn {
+:deep(.show-fields-property-btn) {
   display: block;
-  padding: 8px 12px;
-  background: white;
-  color: #1ab394;
-  border: 1px solid #ddd;
+  width: 100%;
+  padding: 10px 12px;
+  margin: 12px 0;
+  background: #1ab394;
+  color: white;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
 }
 
-.show-fields-toggle-btn:hover {
-  background: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+:deep(.show-fields-property-btn:hover) {
+  background: #159a80;
 }
 </style>
