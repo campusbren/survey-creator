@@ -119,7 +119,18 @@ const insertField = (e, fieldName) => {
   // Prevent button from getting focus
   e.preventDefault();
   
-  if (!focusedInput.value) {
+  // Get the input that was active before the button was clicked
+  let input = focusedInput.value;
+  
+  // Fallback: check if there's an active input element
+  if (!input) {
+    const activeEl = document.activeElement;
+    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+      input = activeEl;
+    }
+  }
+  
+  if (!input) {
     alert('Click on a text input field first, then select a field to pipe.');
     return;
   }
@@ -127,7 +138,6 @@ const insertField = (e, fieldName) => {
   // Mark that we're inserting to prevent focus tracking from interfering
   isInserting.value = true;
 
-  const input = focusedInput.value;
   const startPos = input.selectionStart || 0;
   const endPos = input.selectionEnd || 0;
   const text = input.value;
