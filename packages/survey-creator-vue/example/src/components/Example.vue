@@ -154,6 +154,106 @@ import { SurveyCreatorComponent } from "survey-creator-vue";
   flex-direction: column;
 }
 
+.creator-wrapper :deep(.svc-creator) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-creator__content) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu-wrapper) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu__content) {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.creator-wrapper :deep(.svda-root) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svd-designer) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svd-surface) {
+  flex: 1;
+  min-height: 0;
+}
+
+.creator-wrapper :deep(.svc-creator__content-container) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu__container) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu__content-wrapper) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-creator__inner) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svd-tabbed-toolbar) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu__tabs) {
+  flex-shrink: 0;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu__header) {
+  flex-shrink: 0;
+}
+
+.creator-wrapper :deep(.svc-tabbed-menu__footer) {
+  flex-shrink: 0;
+}
+
 .field-piping-container {
   position: fixed;
   top: 125px;
