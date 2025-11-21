@@ -23,6 +23,13 @@ export default defineConfig(({ command }) => {
       hmr: {
         clientPort: 443,
         protocol: 'wss'
+      },
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+          secure: false
+        }
       }
     }
   }

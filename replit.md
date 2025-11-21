@@ -19,6 +19,7 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 
 ## Features
 
+### Survey Creator (Main Tool)
 - Drag-and-drop form builder interface
 - Visual form designer with live preview
 - Theme editor for customizing form appearance
@@ -27,6 +28,39 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - Multiple question types (rating, dropdown, checkboxes, etc.)
 - Survey settings panel
 - Test/Preview mode
+- **Field Piping**: Insert dynamic field references (e.g., `{firstName}`) into text inputs
+  - Draggable panel that works across Designer and Preview tabs
+  - Search functionality to find fields quickly
+  - Works with SurveyJS contenteditable elements
+  - Automatically tracks available form fields
+
+### CSV Survey Generator (New Tool)
+- Upload CSV files to create dynamic surveys
+- Select display column and unique ID column from CSV data
+- Preview CSV data before generating survey
+- Generate dropdown surveys from CSV data
+- Save survey responses to Replit database
+- View all submitted responses with timestamps
+- Full integration with SurveyJS rendering engine
+
+## Recent Changes (November 21, 2025)
+
+### CSV Survey Tool Added
+- Created Express backend server (port 3001) with API endpoints for survey responses
+- Integrated Replit Database for persistent storage of survey responses
+- Built CsvSurvey.vue component with file upload, column selection, and survey generation
+- Added navigation bar to switch between Survey Creator and CSV Survey tools
+- Configured Vite proxy to forward API requests to Express backend
+- Added sample CSV file for testing (`public/sample-courses.csv`)
+- Updated package.json to run both Vite and Express servers concurrently
+
+### Field Piping Feature Added
+- Created PipeAutocomplete.vue component with field insertion capability
+- Implemented focus tracking for SurveyJS contenteditable elements
+- Added event propagation handling to prevent SurveyJS editor closure
+- Supports both standard INPUT/TEXTAREA and contenteditable elements
+- Draggable panel with search functionality
+- Fixed Selection API range handling for robust insertion
 
 ## Recent Changes (November 20, 2025)
 

@@ -2,8 +2,11 @@
   "name": "example",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5000 --force",
+    "dev": "concurrently \"vite --host 0.0.0.0 --port 5000 --force\" \"node server.js\"",
+    "dev:vite": "vite --host 0.0.0.0 --port 5000 --force",
+    "dev:server": "node server.js",
     "build": "run-p type-check build-only",
     "preview": "vite preview --host 0.0.0.0 --port 5000",
     "build-only": "vite build",
