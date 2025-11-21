@@ -58,6 +58,7 @@ const setupFocusTracking = () => {
     if (isInsidePanel(e.target)) return;
     
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+      console.log('Focus tracking: Captured input element on focusin', e.target);
       focusedInput.value = e.target;
       searchText.value = '';
     }
@@ -75,6 +76,7 @@ const setupFocusTracking = () => {
     if (isInsidePanel(e.target)) return;
     
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+      console.log('Focus tracking: Captured input element on click', e.target);
       focusedInput.value = e.target;
       searchText.value = '';
     }
@@ -125,8 +127,9 @@ const insertField = (e, fieldName) => {
   console.log('focusedInput.value:', focusedInput.value);
   console.log('document.activeElement:', document.activeElement);
   
-  // Prevent button from getting focus
+  // CRITICAL: Prevent the mousedown from stealing focus from the input
   e.preventDefault();
+  e.stopPropagation();
   
   // Get the input that was active before the button was clicked
   let input = focusedInput.value;
