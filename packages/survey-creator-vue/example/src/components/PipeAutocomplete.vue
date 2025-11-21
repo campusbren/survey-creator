@@ -48,8 +48,25 @@ const isInsidePanel = (target) => {
   return false;
 };
 
+const isEditableElement = (el) => {
+  if (!el) return false;
+  
+  // Standard input/textarea
+  if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return true;
+  
+  // SurveyJS uses contenteditable SPAN elements
+  if (el.contentEditable === 'true' || el.getAttribute('contenteditable') === 'true') {
+    return true;
+  }
+  
+  // Also check for role="textbox" (SurveyJS editors have this)
+  if (el.getAttribute('role') === 'textbox') return true;
+  
+  return false;
+};
+
 const setupFocusTracking = () => {
-  // Track which input has focus using focusin (bubbles better than focus)
+  // Track which element has focus using focusin (bubbles better than focus)
   const trackFocus = (e) => {
     // Skip tracking if we're in the middle of inserting
     if (isInserting.value) return;
@@ -57,8 +74,8 @@ const setupFocusTracking = () => {
     // Don't update if clicking inside the Field Piping panel
     if (isInsidePanel(e.target)) return;
     
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-      console.log('Focus tracking: Captured input element on focusin', e.target);
+    if (isEditableElement(e.target)) {
+      console.log('Focus tracking: Captured editable element on focusin', e.target);
       focusedInput.value = e.target;
       searchText.value = '';
     }
@@ -75,8 +92,8 @@ const setupFocusTracking = () => {
     // Don't update if clicking inside the Field Piping panel
     if (isInsidePanel(e.target)) return;
     
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-      console.log('Focus tracking: Captured input element on click', e.target);
+    if (isEditableElement(e.target)) {
+      console.log('Focus tracking: Captured editable element on click', e.target);
       focusedInput.value = e.target;
       searchText.value = '';
     }
@@ -131,47 +148,82 @@ const insertField = (e, fieldName) => {
   e.preventDefault();
   e.stopPropagation();
   
-  // Get the input that was active before the button was clicked
+  // Get the element that was active before the button was clicked
   let input = focusedInput.value;
   
-  // Fallback: check if there's an active input element
+  // Fallback: check if there's an active editable element
   if (!input) {
     const activeEl = document.activeElement;
     console.log('activeEl tagName:', activeEl?.tagName);
-    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+    if (activeEl && isEditableElement(activeEl)) {
       input = activeEl;
       console.log('Using activeElement as input');
     }
   }
   
   if (!input) {
-    console.error('No input field found! focusedInput.value and activeElement both failed');
-    alert('Click on a text input field first, then select a field to pipe.');
+    console.error('No editable element found! focusedInput.value and activeElement both failed');
+    alert('Click on a text field first, then select a field to pipe.');
     return;
   }
 
-  console.log('Inserting field into input:', input);
+  console.log('Inserting field into element:', input);
   
   // Mark that we're inserting to prevent focus tracking from interfering
   isInserting.value = true;
 
-  const startPos = input.selectionStart || 0;
-  const endPos = input.selectionEnd || 0;
-  const text = input.value;
-
   const fieldCode = `{${fieldName}}`;
-  const newText = text.substring(0, startPos) + fieldCode + text.substring(endPos);
   
-  input.value = newText;
-  input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
-  
-  // Trigger input event so SurveyJS detects the change
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-  
-  // Refocus the original input
-  input.focus();
-  input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
+  // Handle contenteditable elements (SurveyJS editors)
+  if (input.contentEditable === 'true' || input.getAttribute('contenteditable') === 'true') {
+    console.log('Inserting into contenteditable element');
+    
+    // Refocus first to ensure selection is active
+    input.focus();
+    
+    // Use the Selection API for contenteditable elements
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    // Delete the current selection (if any)
+    range.deleteContents();
+    
+    // Create a text node with the field code
+    const textNode = document.createTextNode(fieldCode);
+    range.insertNode(textNode);
+    
+    // Move cursor after the inserted text
+    range.setStartAfter(textNode);
+    range.setEndAfter(textNode);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Trigger input event so SurveyJS detects the change
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    input.dispatchEvent(new Event('blur', { bubbles: true }));
+    input.dispatchEvent(new Event('focus', { bubbles: true }));
+  } else {
+    // Handle standard input/textarea elements
+    console.log('Inserting into standard input/textarea');
+    
+    const startPos = input.selectionStart || 0;
+    const endPos = input.selectionEnd || 0;
+    const text = input.value;
+
+    const newText = text.substring(0, startPos) + fieldCode + text.substring(endPos);
+    
+    input.value = newText;
+    input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
+    
+    // Trigger input event so SurveyJS detects the change
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    
+    // Refocus the original input
+    input.focus();
+    input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
+  }
   
   console.log('Field inserted successfully');
   
