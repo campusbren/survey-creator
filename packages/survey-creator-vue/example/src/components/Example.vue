@@ -10,28 +10,27 @@ creator.toolbox.searchEnabled = false;
 creator.toolbox.overflowBehavior = "hideInMenu";
 creator.expandCollapseButtonVisibility = "onhover";
 
-const showFieldPiping = ref(false);
 const showCsvImport = ref(false);
 const canImportCsv = ref(false);
 
-// Add "Show Fields" button to the toolbar
-const fieldPipingAction = new Action({
-  id: "show-fields",
-  title: "🔗 Show Fields",
-  tooltip: "Insert field references (piping)",
-  visible: true,
-  action: () => {
-    showFieldPiping.value = !showFieldPiping.value;
-    console.log('Show Fields clicked from toolbar, showFieldPiping:', showFieldPiping.value);
-  }
+// Import SideBarPageModel to add to the left sidebar
+import { SideBarPageModel } from 'survey-creator-core';
+
+// Add "Show Fields" to the left sidebar (icon rail)
+const fieldPipingPage = new SideBarPageModel({
+  id: "field-piping",
+  title: "Show Fields", 
+  tooltip: "Insert field references",
+  iconName: "icon-link",
+  component: "field-piping-sidebar-page",
+  componentData: { creator: creator }
 });
 
-// Add the action to the top toolbar
-creator.toolbar.actions.push(fieldPipingAction);
+creator.sideBar.addPage(fieldPipingPage);
 
-// Provide close function (opening is now handled by sidebar action)
+// Provide close function for FieldPipingSidebar
 provide('closeFieldPiping', () => {
-  showFieldPiping.value = false;
+  fieldPipingPage.visible = false;
   console.log('Field Piping Sidebar closed');
 });
 
