@@ -63,18 +63,20 @@
 
       <div class="preview-data">
         <h4>Preview (First 5 rows):</h4>
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th v-for="col in columnNames" :key="col">{{ col }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, idx) in csvData.slice(0, 5)" :key="idx">
-              <td v-for="col in columnNames" :key="col">{{ row[col] }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-wrapper">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th v-for="col in columnNames" :key="col">{{ col }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, idx) in csvData.slice(0, 5)" :key="idx">
+                <td v-for="col in columnNames" :key="col">{{ row[col] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <button @click="generateSurvey" class="btn btn-success">
@@ -553,10 +555,17 @@ onMounted(() => {
   font-size: 16px;
 }
 
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  white-space: nowrap;
 }
 
 .table thead {
