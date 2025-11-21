@@ -142,13 +142,17 @@ const setupFocusTracking = () => {
 };
 
 const insertField = (fieldName) => {
+  console.log('insertField called with:', fieldName);
+  console.log('focusedInput.value:', focusedInput.value);
+  
   if (!focusedInput.value) {
-    alert('Please click a text field first to insert the field reference.');
+    alert('Please click inside a text field first (in the Designer tab, click on a question, then click in the "Question title" or "Description" field in the property panel on the right).');
     return;
   }
 
   const text = `{${fieldName}}`;
   const target = focusedInput.value;
+  console.log('Attempting to insert:', text, 'into:', target);
 
   // For contenteditable elements (SurveyJS uses these)
   if (target.contentEditable === 'true' || target.getAttribute('contenteditable') === 'true') {
