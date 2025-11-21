@@ -181,10 +181,10 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
         <div class="creator-wrapper">
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
           
-          <!-- Show Fields Button in Property Grid -->
+          <!-- Show Fields Button positioned near property panel -->
           <div class="show-fields-button-wrapper">
             <button 
-              class="show-fields-property-btn" 
+              class="show-fields-btn" 
               @click="showFieldPiping = !showFieldPiping"
               title="Toggle field references panel"
             >
@@ -234,6 +234,7 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   flex-direction: column;
 }
 
+/* Show Fields button positioned near property panel */
 .show-fields-button-wrapper {
   position: absolute;
   top: 60px;
@@ -243,7 +244,7 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   pointer-events: none;
 }
 
-.show-fields-property-btn {
+.show-fields-btn {
   display: block;
   width: 100%;
   padding: 10px 12px;
@@ -259,7 +260,7 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.show-fields-property-btn:hover {
+.show-fields-btn:hover {
   background: #159a80;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
