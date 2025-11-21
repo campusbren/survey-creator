@@ -175,16 +175,29 @@ const insertField = (fieldName) => {
       selection.removeAllRanges();
       selection.addRange(range);
       
-      // Trigger input event so SurveyJS knows the content changed
+      // Trigger multiple events so SurveyJS detects the change
       target.dispatchEvent(new Event('input', { bubbles: true }));
-      target.focus();
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+      target.dispatchEvent(new Event('blur', { bubbles: true }));
       
-      console.log('Inserted field via Selection API:', text);
+      // Force SurveyJS to update by triggering a focus event after a short delay
+      setTimeout(() => {
+        target.focus();
+        target.dispatchEvent(new Event('focus', { bubbles: true }));
+      }, 10);
+      
+      console.log('Inserted field via Selection API:', text, 'New content:', target.textContent);
     } else {
       // Fallback: append to the end
       target.textContent = (target.textContent || '') + text;
       target.dispatchEvent(new Event('input', { bubbles: true }));
-      target.focus();
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+      target.dispatchEvent(new Event('blur', { bubbles: true }));
+      setTimeout(() => {
+        target.focus();
+        target.dispatchEvent(new Event('focus', { bubbles: true }));
+      }, 10);
+      console.log('Inserted field (fallback):', text, 'New content:', target.textContent);
     }
   } 
   // For standard input/textarea elements
@@ -197,9 +210,14 @@ const insertField = (fieldName) => {
     target.selectionStart = target.selectionEnd = start + text.length;
     
     target.dispatchEvent(new Event('input', { bubbles: true }));
-    target.focus();
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+    target.dispatchEvent(new Event('blur', { bubbles: true }));
+    setTimeout(() => {
+      target.focus();
+      target.dispatchEvent(new Event('focus', { bubbles: true }));
+    }, 10);
     
-    console.log('Inserted field into input:', text);
+    console.log('Inserted field into input:', text, 'New value:', target.value);
   }
 };
 
