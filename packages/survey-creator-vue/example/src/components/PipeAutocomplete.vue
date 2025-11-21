@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 
 const props = defineProps({
   creator: {
@@ -88,28 +88,46 @@ const setupFocusTracking = () => {
   };
 };
 
-onMounted(() => {
+onMounted(async () => {
   setupFocusTracking();
+  
+  // Wait for DOM to be ready
+  await nextTick();
   
   // Prevent SurveyJS from closing the active editor when clicking the panel
   // SurveyJS has global pointerdown listeners that close editors on "outside" clicks
-  // Use nextTick to ensure the DOM is ready
-  setTimeout(() => {
-    if (panelContainer.value) {
-      panelContainer.value.addEventListener('pointerdown', (e) => {
-        // Stop the event from reaching SurveyJS' global handlers
-        e.stopPropagation();
-      }, true); // Use capture phase
-      
-      panelContainer.value.addEventListener('click', (e) => {
-        // Also stop click events
-        e.stopPropagation();
-      }, true); // Use capture phase
-    }
-  }, 0);
+  if (panelContainer.value) {
+    console.log('Field Piping panel: Adding event listeners to prevent SurveyJS editor closure');
+    
+    panelContainer.value.addEventListener('pointerdown', (e) => {
+      console.log('Field Piping panel: pointerdown event, stopping propagation');
+      // Stop the event from reaching SurveyJS' global handlers
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }, true); // Use capture phase
+    
+    panelContainer.value.addEventListener('mousedown', (e) => {
+      console.log('Field Piping panel: mousedown event, stopping propagation');
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }, true); // Use capture phase
+    
+    panelContainer.value.addEventListener('click', (e) => {
+      console.log('Field Piping panel: click event, stopping propagation');
+      // Also stop click events
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }, true); // Use capture phase
+  } else {
+    console.error('Field Piping panel: panelContainer.value is null!');
+  }
 });
 
 const insertField = (e, fieldName) => {
+  console.log('insertField called for:', fieldName);
+  console.log('focusedInput.value:', focusedInput.value);
+  console.log('document.activeElement:', document.activeElement);
+  
   // Prevent button from getting focus
   e.preventDefault();
   
@@ -119,16 +137,21 @@ const insertField = (e, fieldName) => {
   // Fallback: check if there's an active input element
   if (!input) {
     const activeEl = document.activeElement;
+    console.log('activeEl tagName:', activeEl?.tagName);
     if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
       input = activeEl;
+      console.log('Using activeElement as input');
     }
   }
   
   if (!input) {
+    console.error('No input field found! focusedInput.value and activeElement both failed');
     alert('Click on a text input field first, then select a field to pipe.');
     return;
   }
 
+  console.log('Inserting field into input:', input);
+  
   // Mark that we're inserting to prevent focus tracking from interfering
   isInserting.value = true;
 
@@ -149,6 +172,8 @@ const insertField = (e, fieldName) => {
   // Refocus the original input
   input.focus();
   input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
+  
+  console.log('Field inserted successfully');
   
   // Re-enable focus tracking after everything settles
   setTimeout(() => {
