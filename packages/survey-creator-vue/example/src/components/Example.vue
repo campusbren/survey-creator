@@ -161,6 +161,13 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
         <div v-if="showFieldPiping" class="field-piping-container">
           <FieldPipingSidebar :creator="creator" @close="showFieldPiping = false" />
         </div>
+
+        <!-- CSV Import Panel (modal) -->
+        <CsvImportPanel 
+          :isOpen="showCsvImport"
+          :onImport="handleCsvImport"
+          @close="showCsvImport = false"
+        />
     </div>
 </template>
 <style scoped>
