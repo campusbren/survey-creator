@@ -29,10 +29,12 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - Survey settings panel
 - Test/Preview mode
 - **Field Piping**: Insert dynamic field references (e.g., `{firstName}`) into text inputs
-  - Draggable panel that works across Designer and Preview tabs
+  - Accessible via "Show Fields" button at top-right of property panel
+  - Sidebar panel that works across Designer and Preview tabs
   - Search functionality to find fields quickly
-  - Works with SurveyJS contenteditable elements
+  - Works with SurveyJS contenteditable elements and standard inputs
   - Automatically tracks available form fields
+  - Click field names to insert them at cursor position
 
 ### CSV Survey Generator (New Tool)
 - Upload CSV files to create dynamic surveys
@@ -48,9 +50,12 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 ### UI/UX Improvements
 - Fixed navigation bar visibility by removing fixed positioning from Example.vue
 - Navigation bar now properly displays across all routes without overlay issues
-- Moved Field Piping from floating draggable panel to toolbar button integration
-- Added "Show Fields" button to Survey Creator toolbar for cleaner UX
-- Field Piping panel now toggles on/off with fixed right-side positioning
+- **Show Fields Button**: Positioned at top-right of property panel area for easy access
+  - Green button with link icon (🔗 Show Fields)
+  - Toggles Field Piping Sidebar on/off
+  - Implemented using CSS positioning (absolute positioning at top: 60px, right: 12px)
+  - Clean integration without modifying SurveyJS core components
+- Field Piping panel now toggles on/off with right-side positioning
 - Simplified layout with clean CSS approach (height: 100% on creator wrapper)
 - Clean, professional interface without excessive layout overrides
 
@@ -75,13 +80,16 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - **Auto-restore Alert**: Blue info banner shows when CSV data is automatically loaded
 - **Server Fix**: GET /api/survey now correctly iterates Replit Database keys and fetches full response data
 
-### Field Piping Feature Added
+### Field Piping Feature  
 - Created FieldPipingSidebar.vue component with field insertion capability
 - Implemented focus tracking for SurveyJS contenteditable elements
 - Supports both standard INPUT/TEXTAREA and contenteditable elements
-- Panel with search functionality and close button
+- Panel with search functionality, collapsible sections, and close button
 - Fixed Selection API range handling for robust insertion
-- Accessible via "Show Fields" toolbar button in Survey Creator
+- **Access Method**: "Show Fields" button positioned at top-right of property panel
+  - Button appears when property panel is visible
+  - Clean CSS-based positioning without component overrides
+  - Properly declared Vue emits to avoid warnings
 
 ## Recent Changes (November 20, 2025)
 
