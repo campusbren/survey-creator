@@ -141,14 +141,45 @@ creator.survey.fromJSON(sampleSurvey);
 import { SurveyCreatorComponent } from "survey-creator-vue";
 
 const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
-  const focusedElement = creator.survey.getSelectedElement();
-  if (!focusedElement || !('choices' in focusedElement)) {
+  console.log('Import handler called with choices:', choices);
+  console.log('Creator object:', creator);
+  
+  // Get the selected element - try different approaches
+  let element = null;
+  
+  // Approach 1: Direct selectedElement property
+  if ((creator as any).selectedElement) {
+    element = (creator as any).selectedElement;
+    console.log('Found via creator.selectedElement');
+  }
+  // Approach 2: Through survey
+  else if ((creator as any).survey?.selectedElement) {
+    element = (creator as any).survey.selectedElement;
+    console.log('Found via creator.survey.selectedElement');
+  }
+  // Approach 3: Through viewModel
+  else if ((creator as any).viewModel?.selectedElement) {
+    element = (creator as any).viewModel.selectedElement;
+    console.log('Found via creator.viewModel.selectedElement');
+  }
+  
+  console.log('Selected element:', element);
+  
+  if (!element) {
     alert('Please select a dropdown, checkbox, or radio button question first');
     return;
   }
   
-  (focusedElement as any).choices = choices;
-  console.log('✓ Answer choices imported successfully!', choices);
+  // Check if element has choices property
+  if (!('choices' in element)) {
+    alert('Selected question must be a dropdown, checkbox, or radio button');
+    return;
+  }
+  
+  // Update choices
+  (element as any).choices = choices;
+  console.log('✓ Answer choices imported successfully!', element.choices);
+  alert('✓ Answer choices imported! (' + choices.length + ' items)');
 };
 </script>
 <template>
