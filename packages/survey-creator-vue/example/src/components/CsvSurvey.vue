@@ -5,6 +5,15 @@
       <p>Upload a CSV file to create a dynamic survey with custom field mappings</p>
     </div>
 
+    <div v-if="autoRestored" class="alert alert-info">
+      <span class="alert-icon">💾</span>
+      <div class="alert-content">
+        <strong>Auto-restored from previous session</strong>
+        <p>Your last CSV data has been automatically loaded. Upload a new file to replace it.</p>
+      </div>
+      <button @click="autoRestored = false" class="alert-close">✕</button>
+    </div>
+
     <div class="upload-section" v-if="!csvData.length">
       <div class="file-input-wrapper">
         <input 
@@ -138,6 +147,7 @@ const fileInput = ref(null);
 const responses = ref([]);
 const errorMessage = ref('');
 const successMessage = ref('');
+const autoRestored = ref(false);
 
 const handleFileSelect = (event) => {
   const file = event.target.files[0];
@@ -160,14 +170,53 @@ const uploadFile = () => {
       csvData.value = results.data;
       columnNames.value = results.meta.fields;
       
-      // Auto-select first columns as defaults
-      if (columnNames.value.length > 0) {
+      // Save to localStorage for auto-restore (with SSR guard)
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem('lastCsvData', JSON.stringify(results.data));
+          localStorage.setItem('lastCsvColumns', JSON.stringify(results.meta.fields));
+        } catch (e) {
+          console.error('Failed to save to localStorage:', e);
+        }
+      }
+      
+      // Smart UUID column detection
+      const uuidGuess = columnNames.value.find(col => 
+        col.toLowerCase().includes('uuid') || 
+        col.toLowerCase().includes('id') ||
+        col.toLowerCase() === 'id'
+      );
+      
+      // Check localStorage for saved preferences (with SSR guard)
+      let savedDisplayCol = null;
+      let savedUuidCol = null;
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        savedDisplayCol = localStorage.getItem('csvDisplayColumn');
+        savedUuidCol = localStorage.getItem('csvUuidColumn');
+      }
+      
+      // Use saved preferences if columns still exist, otherwise use smart defaults
+      if (savedDisplayCol && columnNames.value.includes(savedDisplayCol)) {
+        displayColumn.value = savedDisplayCol;
+      } else {
         displayColumn.value = columnNames.value[0];
+      }
+      
+      if (savedUuidCol && columnNames.value.includes(savedUuidCol)) {
+        uuidColumn.value = savedUuidCol;
+      } else if (uuidGuess) {
+        uuidColumn.value = uuidGuess;
+      } else {
         uuidColumn.value = columnNames.value[columnNames.value.length > 1 ? 1 : 0];
       }
     },
     error: (error) => {
       alert('Error parsing CSV: ' + error.message);
+      // Clear corrupted localStorage on parse error
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        localStorage.removeItem('lastCsvData');
+        localStorage.removeItem('lastCsvColumns');
+      }
     }
   });
 };
@@ -176,6 +225,16 @@ const generateSurvey = () => {
   if (!displayColumn.value || !uuidColumn.value) {
     alert('Please select both display and UUID columns');
     return;
+  }
+
+  // Save column preferences to localStorage (with SSR guard)
+  if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('csvDisplayColumn', displayColumn.value);
+      localStorage.setItem('csvUuidColumn', uuidColumn.value);
+    } catch (e) {
+      console.error('Failed to save column preferences:', e);
+    }
   }
 
   const choices = csvData.value.map(row => ({
@@ -264,6 +323,7 @@ const resetSurvey = () => {
   displayColumn.value = '';
   uuidColumn.value = '';
   surveyGenerated.value = false;
+  autoRestored.value = false;
   if (fileInput.value) {
     fileInput.value.value = '';
   }
@@ -287,6 +347,53 @@ const formatDate = (timestamp) => {
 
 onMounted(() => {
   loadResponses();
+  
+  // Auto-restore last CSV from localStorage (with SSR guard)
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    return;
+  }
+  
+  const savedCsvData = localStorage.getItem('lastCsvData');
+  const savedCsvColumns = localStorage.getItem('lastCsvColumns');
+  
+  if (savedCsvData && savedCsvColumns) {
+    try {
+      const parsedData = JSON.parse(savedCsvData);
+      const parsedColumns = JSON.parse(savedCsvColumns);
+      
+      if (parsedData.length > 0 && parsedColumns.length > 0) {
+        csvData.value = parsedData;
+        columnNames.value = parsedColumns;
+        autoRestored.value = true;
+        
+        // Restore column preferences
+        const savedDisplayCol = localStorage.getItem('csvDisplayColumn');
+        const savedUuidCol = localStorage.getItem('csvUuidColumn');
+        
+        if (savedDisplayCol && parsedColumns.includes(savedDisplayCol)) {
+          displayColumn.value = savedDisplayCol;
+        } else {
+          displayColumn.value = parsedColumns[0];
+        }
+        
+        if (savedUuidCol && parsedColumns.includes(savedUuidCol)) {
+          uuidColumn.value = savedUuidCol;
+        } else {
+          // Smart UUID detection
+          const uuidGuess = parsedColumns.find(col => 
+            col.toLowerCase().includes('uuid') || 
+            col.toLowerCase().includes('id')
+          );
+          uuidColumn.value = uuidGuess || parsedColumns[parsedColumns.length > 1 ? 1 : 0];
+        }
+      }
+    } catch (e) {
+      console.error('Error restoring CSV data:', e);
+      // Clear corrupted data
+      localStorage.removeItem('lastCsvData');
+      localStorage.removeItem('lastCsvColumns');
+    }
+  }
 });
 </script>
 
@@ -553,6 +660,12 @@ onMounted(() => {
   background: #f0fff4;
   border: 1px solid #68d391;
   color: #22543d;
+}
+
+.alert-info {
+  background: #ebf8ff;
+  border: 1px solid #63b3ed;
+  color: #2c5282;
 }
 
 .alert-icon {

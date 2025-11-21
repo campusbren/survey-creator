@@ -1,6 +1,11 @@
-course_name,professor,ta,uuid
-Intro to Economics,Dr. Smith,Alex Lee,uuid-001
-Psychology 101,Dr. Patel,Jamie Wu,uuid-002
-Statistics A,Dr. Nguyen,Chris Li,uuid-003
-Computer Science 101,Dr. Johnson,Sam Chen,uuid-004
-Biology 201,Dr. Martinez,Taylor Kim,uuid-005
+course_name,professor,ta,course_id,department,credits
+Introduction to Economics,Dr. Sarah Smith,Alex Lee,ECON-101,Economics,3
+Psychology Fundamentals,Dr. James Patel,Jamie Wu,PSYC-101,Psychology,4
+Statistics and Data Analysis,Dr. Maria Nguyen,Chris Li,STAT-201,Mathematics,3
+Introduction to Computer Science,Prof. David Chen,Taylor Kim,CS-101,Computer Science,4
+World History: Ancient Civilizations,Dr. Robert Johnson,Jordan Park,HIST-101,History,3
+Organic Chemistry I,Prof. Lisa Anderson,Morgan Davis,CHEM-201,Chemistry,4
+English Literature: Shakespeare,Dr. Emily Brown,Casey Martinez,ENG-202,English,3
+Calculus I,Prof. Michael Wilson,Riley Thompson,MATH-151,Mathematics,4
+Introduction to Philosophy,Dr. Jennifer Garcia,Avery Robinson,PHIL-101,Philosophy,3
+Environmental Science,Prof. Thomas White,Dakota Sullivan,ENVS-101,Environmental Studies,4

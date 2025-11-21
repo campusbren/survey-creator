@@ -41,6 +41,10 @@ externalPort = 80
 localPort = 46489
 externalPort = 3000
 
+[[ports]]
+localPort = 46653
+externalPort = 3002
+
 [deployment]
 deploymentTarget = "autoscale"
 run = ["sh", "-c", "cd packages/survey-creator-vue/example && npm run preview"]
