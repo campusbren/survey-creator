@@ -29,9 +29,6 @@ const csvImportAction = new Action({
 
 creator.toolbar.actions.push(csvImportAction);
 
-// Start with field piping sidebar visible
-showFieldPiping.value = true;
-
 // Monitor for when user selects a question with choices
 creator.onPropertyChanged.add((sender, options) => {
   if (options.name === 'selectedElement') {
@@ -185,6 +182,11 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
         </div>
         
+        <!-- Show Fields Toggle Button -->
+        <button v-if="!showFieldPiping" class="show-fields-button" @click="showFieldPiping = true" title="Show Fields">
+          🔗 Show Fields
+        </button>
+        
         <!-- Field Piping Sidebar (toggleable) -->
         <div v-if="showFieldPiping" class="field-piping-container">
           <FieldPipingSidebar :creator="creator" @close="showFieldPiping = false" />
@@ -220,6 +222,27 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.show-fields-button {
+  position: fixed;
+  top: 125px;
+  right: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #1ab394;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.show-fields-button:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .field-piping-container {
