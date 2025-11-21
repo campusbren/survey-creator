@@ -65,6 +65,16 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - Implemented inline error/success messaging for better user feedback
 - Fixed persistence bug: each submission now gets unique ID (no overwrites)
 
+**CSV Survey Enhancements (November 21, 2025):**
+- **Auto-save & Restore**: CSV data automatically saved to localStorage and restored on page load
+- **Smart UUID Detection**: Automatically detects columns with 'uuid' or 'id' in their name
+- **Column Preferences**: Display and UUID column choices persist across sessions
+- **Better Sample Data**: Updated sample CSV with 10 realistic courses (course_id, department, credits)
+- **SSR-Safe**: All localStorage calls properly guarded for server-side rendering compatibility
+- **Error Handling**: Parse errors automatically clear corrupted data, graceful degradation
+- **Auto-restore Alert**: Blue info banner shows when CSV data is automatically loaded
+- **Server Fix**: GET /api/survey now correctly iterates Replit Database keys and fetches full response data
+
 ### Field Piping Feature Added
 - Created FieldPipingSidebar.vue component with field insertion capability
 - Implemented focus tracking for SurveyJS contenteditable elements
