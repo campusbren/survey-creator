@@ -1,5 +1,11 @@
 <template>
-  <div class="field-piping-sidebar">
+  <!-- Collapsed Icon Button -->
+  <button v-if="!isOpen" class="show-fields-icon" @click="$emit('toggle')" title="Show Fields">
+    🔗
+  </button>
+  
+  <!-- Expanded Sidebar -->
+  <div v-if="isOpen" class="field-piping-sidebar">
     <div class="sidebar-header">
       <div class="header-content">
         <h3>🔗 Show Fields</h3>
@@ -58,6 +64,10 @@ const props = defineProps({
   creator: {
     type: Object,
     required: true
+  },
+  isOpen: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -198,6 +208,28 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.show-fields-icon {
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.show-fields-icon:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
 .field-piping-sidebar {
   padding: 16px;
   background: #fafafa;
