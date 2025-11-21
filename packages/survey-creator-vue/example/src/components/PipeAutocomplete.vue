@@ -178,12 +178,22 @@ const insertField = (e, fieldName) => {
   if (input.contentEditable === 'true' || input.getAttribute('contenteditable') === 'true') {
     console.log('Inserting into contenteditable element');
     
-    // Refocus first to ensure selection is active
+    // Keep focus on the element
     input.focus();
     
     // Use the Selection API for contenteditable elements
     const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
+    
+    // Check if there's a valid selection/range
+    let range;
+    if (selection.rangeCount > 0) {
+      range = selection.getRangeAt(0);
+    } else {
+      // Create a new range at the end of the content
+      range = document.createRange();
+      range.selectNodeContents(input);
+      range.collapse(false);
+    }
     
     // Delete the current selection (if any)
     range.deleteContents();
@@ -200,9 +210,9 @@ const insertField = (e, fieldName) => {
     
     // Trigger input event so SurveyJS detects the change
     input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-    input.dispatchEvent(new Event('blur', { bubbles: true }));
-    input.dispatchEvent(new Event('focus', { bubbles: true }));
+    
+    // Keep the element focused
+    input.focus();
   } else {
     // Handle standard input/textarea elements
     console.log('Inserting into standard input/textarea');
