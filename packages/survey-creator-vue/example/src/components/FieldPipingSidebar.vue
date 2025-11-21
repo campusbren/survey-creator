@@ -233,12 +233,19 @@ onUnmounted(() => {
 }
 
 .field-piping-sidebar {
+  position: fixed;
+  top: 65px;
+  right: 0;
+  width: 320px;
+  height: calc(100vh - 65px);
   padding: 16px;
   background: #fafafa;
-  height: 100%;
+  border-left: 1px solid #e7e7e7;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  z-index: 1000;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {

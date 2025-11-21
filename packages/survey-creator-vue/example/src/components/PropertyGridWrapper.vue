@@ -32,8 +32,12 @@ useBase(() => props.model);
 const toggleFieldPiping = inject<() => void>('toggleFieldPiping');
 
 const handleToggleFields = () => {
+  console.log('Show Fields button clicked!', toggleFieldPiping);
   if (toggleFieldPiping) {
     toggleFieldPiping();
+    console.log('Toggle function called');
+  } else {
+    console.error('toggleFieldPiping function not found - provide/inject may not be working');
   }
 };
 </script>
