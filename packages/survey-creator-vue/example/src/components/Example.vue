@@ -3,6 +3,7 @@ import { SurveyCreatorModel } from 'survey-creator-core';
 import { ref } from 'vue';
 import { Action } from 'survey-core';
 import FieldPipingSidebar from './FieldPipingSidebar.vue';
+import CsvImportPanel from './CsvImportPanel.vue';
 
 const creator = new SurveyCreatorModel({ pageEditMode: "bypage", showLogicTab: true, showJSONEditorTab: true, showTranslationTab: true, showThemeTab: true });
 creator.toolbox.searchEnabled = false;
@@ -10,6 +11,7 @@ creator.toolbox.overflowBehavior = "hideInMenu";
 creator.expandCollapseButtonVisibility = "onhover";
 
 const showFieldPiping = ref(false);
+const showCsvImport = ref(false);
 
 // Add Field Piping toolbar button
 const fieldPipingAction = new Action({
@@ -25,7 +27,21 @@ const fieldPipingAction = new Action({
   }
 });
 
+// Add CSV Import toolbar button
+const csvImportAction = new Action({
+  id: "import-csv",
+  title: "Import CSV",
+  tooltip: "Import Answer Choices from CSV",
+  iconName: "icon-attachment",
+  css: "sv-action-bar-item",
+  visible: true,
+  action: () => {
+    showCsvImport.value = true;
+  }
+});
+
 creator.toolbar.actions.push(fieldPipingAction);
+creator.toolbar.actions.push(csvImportAction);
 
 // Enable dynamic text expressions in page titles and descriptions
 creator.survey.onTextMarkdown.add((survey, options) => {
@@ -123,6 +139,17 @@ const sampleSurvey = {
 creator.survey.fromJSON(sampleSurvey);
 
 import { SurveyCreatorComponent } from "survey-creator-vue";
+
+const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
+  const focusedElement = creator.survey.getSelectedElement();
+  if (!focusedElement || !('choices' in focusedElement)) {
+    alert('Please select a dropdown, checkbox, or radio button question first');
+    return;
+  }
+  
+  (focusedElement as any).choices = choices;
+  console.log('✓ Answer choices imported successfully!', choices);
+};
 </script>
 <template>
     <div class="creator-host">
