@@ -46,12 +46,14 @@ app.post('/api/survey', async (req, res) => {
 // API endpoint to retrieve all survey responses
 app.get('/api/survey', async (req, res) => {
   try {
-    const keys = await db.list();
+    const allData = await db.list();
     const responses = [];
     
-    for (const key of keys) {
-      const value = await db.get(key);
-      responses.push({ uuid: key, ...value });
+    // Handle both empty database and populated database
+    if (allData && typeof allData === 'object') {
+      for (const key in allData) {
+        responses.push({ uuid: key, ...allData[key] });
+      }
     }
     
     res.json({ responses });
