@@ -1,11 +1,31 @@
 <script lang="ts" setup>
 import { SurveyCreatorModel } from 'survey-creator-core';
-import PipeAutocomplete from './PipeAutocomplete.vue';
+import { ref } from 'vue';
+import { Action } from 'survey-core';
+import FieldPipingSidebar from './FieldPipingSidebar.vue';
 
 const creator = new SurveyCreatorModel({ pageEditMode: "bypage", showLogicTab: true, showJSONEditorTab: true, showTranslationTab: true, showThemeTab: true });
 creator.toolbox.searchEnabled = false;
 creator.toolbox.overflowBehavior = "hideInMenu";
 creator.expandCollapseButtonVisibility = "onhover";
+
+const showFieldPiping = ref(false);
+
+// Add Field Piping toolbar button
+const fieldPipingAction = new Action({
+  id: "show-field-piping",
+  title: "Show Fields",
+  tooltip: "Toggle Field Piping Panel",
+  iconName: "icon-text",
+  css: "sv-action-bar-item",
+  visible: true,
+  action: () => {
+    showFieldPiping.value = !showFieldPiping.value;
+    console.log('Field Piping toggled:', showFieldPiping.value);
+  }
+});
+
+creator.toolbar.actions.push(fieldPipingAction);
 
 // Enable dynamic text expressions in page titles and descriptions
 creator.survey.onTextMarkdown.add((survey, options) => {
@@ -105,8 +125,37 @@ creator.survey.fromJSON(sampleSurvey);
 import { SurveyCreatorComponent } from "survey-creator-vue";
 </script>
 <template>
-    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh">
+    <div class="creator-host">
         <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
-        <PipeAutocomplete :creator="creator" />
+        
+        <!-- Field Piping Sidebar (toggleable) -->
+        <div v-if="showFieldPiping" class="field-piping-container">
+          <FieldPipingSidebar :creator="creator" @close="showFieldPiping = false" />
+        </div>
     </div>
 </template>
+<style scoped>
+.creator-host {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.field-piping-container {
+  position: fixed;
+  top: 125px;
+  right: 20px;
+  width: 320px;
+  max-height: calc(100vh - 150px);
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+</style>
