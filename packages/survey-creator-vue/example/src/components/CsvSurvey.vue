@@ -110,7 +110,7 @@
         <button @click="successMessage = ''" class="alert-close">✕</button>
       </div>
       
-      <div id="surveyContainer"></div>
+      <SurveyComponent v-if="surveyModel" :survey="surveyModel" />
     </div>
 
     <div v-if="responses.length > 0" class="responses-section">
@@ -137,6 +137,7 @@
 import { ref, onMounted } from 'vue';
 import Papa from 'papaparse';
 import { Model } from 'survey-core';
+import { SurveyComponent } from 'survey-vue3-ui';
 import 'survey-core/survey-core.min.css';
 
 const csvData = ref([]);
@@ -146,6 +147,7 @@ const selectedFileName = ref('');
 const displayColumn = ref('');
 const uuidColumn = ref('');
 const surveyGenerated = ref(false);
+const surveyModel = ref(null);
 const fileInput = ref(null);
 const responses = ref([]);
 const errorMessage = ref('');
@@ -318,19 +320,9 @@ const generateSurvey = () => {
       });
   });
 
-  const container = document.getElementById('surveyContainer');
-  console.log('Survey Container element:', container);
-  
-  if (container) {
-    container.innerHTML = '';
-    survey.render(container);
-    console.log('✅ Survey rendered successfully!');
-  } else {
-    console.error('❌ Survey container not found!');
-  }
-
+  surveyModel.value = survey;
   surveyGenerated.value = true;
-  console.log('surveyGenerated set to:', surveyGenerated.value);
+  console.log('✅ Survey generated and ready to render!');
 };
 
 const resetSurvey = () => {
@@ -341,6 +333,7 @@ const resetSurvey = () => {
   displayColumn.value = '';
   uuidColumn.value = '';
   surveyGenerated.value = false;
+  surveyModel.value = null;
   autoRestored.value = false;
   if (fileInput.value) {
     fileInput.value.value = '';
