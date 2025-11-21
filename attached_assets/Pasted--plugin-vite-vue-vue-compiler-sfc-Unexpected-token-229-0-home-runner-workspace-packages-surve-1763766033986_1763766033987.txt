@@ -1,0 +1,27 @@
+[plugin:vite:vue] [vue/compiler-sfc] Unexpected token (229:0)
+
+/home/runner/workspace/packages/survey-creator-vue/example/src/components/FieldPipingSidebar.vue
+280|      cleanupFocusTracking();
+281|    }
+282|  });
+283|  </script>
+284|
+/home/runner/workspace/packages/survey-creator-vue/example/src/components/FieldPipingSidebar.vue:229:0
+220|      
+221|      target.value = currentValue.substring(0, start) + text + currentValue.substring(end);
+222|      target.selectionStart = target.selectionEnd = start + text.length;
+   |                              ^
+223|      
+224|      target.dispatchEvent(new Event('input', { bubbles: true }));
+    at constructor (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:367:19)
+    at TypeScriptParserMixin.raise (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:6624:19)
+    at TypeScriptParserMixin.unexpected (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:6644:16)
+    at TypeScriptParserMixin.parseExprAtom (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:11508:22)
+    at TypeScriptParserMixin.parseExprSubscripts (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:11145:23)
+    at TypeScriptParserMixin.parseUpdate (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:11130:21)
+    at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:11110:23)
+    at TypeScriptParserMixin.parseMaybeUnary (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:9890:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:10963:61)
+    at TypeScriptParserMixin.parseExprOps (/home/runner/workspace/packages/survey-creator-vue/example/node_modules/@babel/parser/lib/index.js:10968:23
+Click outside, press Esc key, or fix the code to dismiss.
+You can also disable this overlay by setting server.hmr.overlay to false in vite.config.js.

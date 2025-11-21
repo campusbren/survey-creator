@@ -160,81 +160,86 @@ const insertField = (fieldName) => {
     const target = focusedInput.value;
     console.log('Attempting to insert:', text, 'into focused input:', target);
 
-  // For contenteditable elements (SurveyJS uses these)
-  if (target.contentEditable === 'true' || target.getAttribute('contenteditable') === 'true') {
-    const selection = window.getSelection();
-    
-    // If there's a selection range in the document
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
+    // For contenteditable elements (SurveyJS uses these)
+    if (target.contentEditable === 'true' || target.getAttribute('contenteditable') === 'true') {
+      const selection = window.getSelection();
       
-      // Create a text node with the field reference
-      const textNode = document.createTextNode(text);
+      // If there's a selection range in the document
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        
+        // Create a text node with the field reference
+        const textNode = document.createTextNode(text);
+        
+        // Insert the text node at the current cursor position
+        range.deleteContents();
+        range.insertNode(textNode);
+        
+        // Move cursor after the inserted text
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        // Trigger multiple events so SurveyJS detects the change
+        target.dispatchEvent(new Event('input', { bubbles: true }));
+        target.dispatchEvent(new Event('change', { bubbles: true }));
+        target.dispatchEvent(new Event('blur', { bubbles: true }));
+        
+        // Force SurveyJS to update by triggering a focus event after a short delay
+        setTimeout(() => {
+          target.focus();
+          target.dispatchEvent(new Event('focus', { bubbles: true }));
+        }, 10);
+        
+        console.log('Inserted field via Selection API:', text, 'New content:', target.textContent);
+        
+        // Now update the SurveyJS model to persist the change
+        updateSurveyJSModel(selectedElement, target);
+      } else {
+        // Fallback: append to the end
+        target.textContent = (target.textContent || '') + text;
+        target.dispatchEvent(new Event('input', { bubbles: true }));
+        target.dispatchEvent(new Event('change', { bubbles: true }));
+        target.dispatchEvent(new Event('blur', { bubbles: true }));
+        setTimeout(() => {
+          target.focus();
+          target.dispatchEvent(new Event('focus', { bubbles: true }));
+        }, 10);
+        console.log('Inserted field (fallback):', text, 'New content:', target.textContent);
+        
+        // Now update the SurveyJS model to persist the change
+        updateSurveyJSModel(selectedElement, target);
+      }
+    } 
+    // For standard input/textarea elements
+    else if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+      const start = target.selectionStart || 0;
+      const end = target.selectionEnd || 0;
+      const currentValue = target.value || '';
       
-      // Insert the text node at the current cursor position
-      range.deleteContents();
-      range.insertNode(textNode);
+      target.value = currentValue.substring(0, start) + text + currentValue.substring(end);
+      target.selectionStart = target.selectionEnd = start + text.length;
       
-      // Move cursor after the inserted text
-      range.setStartAfter(textNode);
-      range.setEndAfter(textNode);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      
-      // Trigger multiple events so SurveyJS detects the change
       target.dispatchEvent(new Event('input', { bubbles: true }));
       target.dispatchEvent(new Event('change', { bubbles: true }));
       target.dispatchEvent(new Event('blur', { bubbles: true }));
-      
-      // Force SurveyJS to update by triggering a focus event after a short delay
       setTimeout(() => {
         target.focus();
         target.dispatchEvent(new Event('focus', { bubbles: true }));
       }, 10);
       
-      console.log('Inserted field via Selection API:', text, 'New content:', target.textContent);
+      console.log('Inserted field into input:', text, 'New value:', target.value);
       
       // Now update the SurveyJS model to persist the change
       updateSurveyJSModel(selectedElement, target);
     } else {
-      // Fallback: append to the end
-      target.textContent = (target.textContent || '') + text;
-      target.dispatchEvent(new Event('input', { bubbles: true }));
-      target.dispatchEvent(new Event('change', { bubbles: true }));
-      target.dispatchEvent(new Event('blur', { bubbles: true }));
-      setTimeout(() => {
-        target.focus();
-        target.dispatchEvent(new Event('focus', { bubbles: true }));
-      }, 10);
-      console.log('Inserted field (fallback):', text, 'New content:', target.textContent);
-      
-      // Now update the SurveyJS model to persist the change
-      updateSurveyJSModel(selectedElement, target);
+      console.log('No valid input element found, trying to insert directly into model');
+      insertDirectlyIntoModel(selectedElement, text);
     }
-  } 
-  // For standard input/textarea elements
-  else if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-    const start = target.selectionStart || 0;
-    const end = target.selectionEnd || 0;
-    const currentValue = target.value || '';
-    
-    target.value = currentValue.substring(0, start) + text + currentValue.substring(end);
-    target.selectionStart = target.selectionEnd = start + text.length;
-    
-    target.dispatchEvent(new Event('input', { bubbles: true }));
-    target.dispatchEvent(new Event('change', { bubbles: true }));
-    target.dispatchEvent(new Event('blur', { bubbles: true }));
-    setTimeout(() => {
-      target.focus();
-      target.dispatchEvent(new Event('focus', { bubbles: true }));
-    }, 10);
-    
-    console.log('Inserted field into input:', text, 'New value:', target.value);
-    
-    // Now update the SurveyJS model to persist the change
-    updateSurveyJSModel(selectedElement, target);
   } else {
-    console.log('No valid input element found, trying to insert directly into model');
+    // No focused input, insert directly into the model
+    console.log('No focused input, inserting directly into model');
     insertDirectlyIntoModel(selectedElement, text);
   }
 };
