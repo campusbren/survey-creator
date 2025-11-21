@@ -182,9 +182,14 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
         </div>
         
-        <!-- Show Fields Toggle Button -->
-        <button v-if="!showFieldPiping" class="show-fields-button" @click="showFieldPiping = true" title="Show Fields">
-          🔗 Show Fields
+        <!-- Show Fields Button in Right Sidebar -->
+        <button 
+          v-if="!showFieldPiping" 
+          class="show-fields-icon-btn" 
+          @click="showFieldPiping = true" 
+          title="Show Fields"
+        >
+          🔗
         </button>
         
         <!-- Field Piping Sidebar (toggleable) -->
@@ -224,25 +229,28 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   flex-direction: column;
 }
 
-.show-fields-button {
+.show-fields-icon-btn {
   position: fixed;
-  top: 125px;
-  right: 20px;
-  background: white;
+  right: 32px;
+  top: 550px;
+  width: 48px;
+  height: 48px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px 16px;
+  border-radius: 6px;
+  background: white;
   cursor: pointer;
-  font-weight: 500;
-  color: #1ab394;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 999;
 }
 
-.show-fields-button:hover {
+.show-fields-icon-btn:hover {
   background: #f9f9f9;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .field-piping-container {
