@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { ref, provide } from 'vue';
+import { ref, provide, onMounted } from 'vue';
 import { Action } from 'survey-core';
 import FieldPipingSidebar from './FieldPipingSidebar.vue';
 import CsvImportPanel from './CsvImportPanel.vue';
@@ -141,9 +141,14 @@ const sampleSurvey = {
   ]
 };
 
-creator.survey.fromJSON(sampleSurvey);
-
 import { SurveyCreatorComponent } from "survey-creator-vue";
+
+// Load sample survey after component is mounted
+onMounted(() => {
+  creator.JSON = sampleSurvey;
+  console.log('✓ Sample survey loaded with', sampleSurvey.pages.length, 'pages and', sampleSurvey.pages[0].elements.length, 'elements on page 1');
+  console.log('Creator JSON:', creator.JSON);
+});
 
 const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   console.log('Import handler called with choices:', choices);
