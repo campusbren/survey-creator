@@ -1,0 +1,228 @@
+# Create a Node.js Repl and paste this into the shell. Then click "Run" to launch.
+# It installs dependencies, creates frontend + backend files, and runs the app.
+
+echo '{
+  "name": "surveyjs-csv-tool",
+  "version": "1.1.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "@replit/database": "^2.0.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  }
+}' > package.json
+
+# 🧠 Backend: server.js
+cat <<'EOF' > server.js
+import express from "express";
+import bodyParser from "body-parser";
+import Database from "@replit/database";
+
+const app = express();
+const db = new Database();
+
+app.use(bodyParser.json());
+app.use(express.static(".")); // serve frontend
+
+// Save survey responses
+app.post("/api/survey", async (req, res) => {
+  const { uuid, display_text, all_responses } = req.body;
+  await db.set(uuid, { display_text, all_responses, timestamp: new Date().toISOString() });
+  console.log("✅ Saved response:", uuid, display_text);
+  res.json({ status: "saved", uuid });
+});
+
+// Return all saved responses
+app.get("/api/all-responses", async (req, res) => {
+  const keys = await db.list();
+  const entries = {};
+  for (const key of keys) entries[key] = await db.get(key);
+  res.json(entries);
+});
+
+app.listen(3000, () => console.log("🚀 Server running on port 3000"));
+EOF
+
+# 🧩 Frontend: index.html
+cat <<'EOF' > index.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dynamic Survey Generator</title>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/survey-core/survey.core.min.js"></script>
+    <script src="https://unpkg.com/survey-knockout-ui/survey.ko.min.js"></script>
+    <style>
+      body { font-family: sans-serif; margin: 2em; }
+      table { border-collapse: collapse; margin-top: 1em; }
+      th, td { border: 1px solid #ccc; padding: 4px 8px; font-size: 14px; }
+      th { background: #f3f3f3; }
+      button { margin-top: 0.5em; }
+    </style>
+  </head>
+  <body>
+    <h2>Upload Course Schedule CSV</h2>
+    <input type="file" id="csvFile" accept=".csv" />
+    <button id="uploadBtn">Upload</button>
+
+    <div id="columnSelect" style="margin-top: 1em;"></div>
+    <div id="surveyContainer" style="margin-top: 2em;"></div>
+
+    <button id="viewResponses" style="display:none;">View Saved Responses</button>
+    <div id="responseTable"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+EOF
+
+# 🧠 Frontend Logic: script.js
+cat <<'EOF' > script.js
+let csvData = [];
+let columnNames = [];
+
+document.getElementById("uploadBtn").addEventListener("click", () => {
+  const file = document.getElementById("csvFile").files[0];
+  if (!file) return alert("Please select a CSV file first!");
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: (results) => {
+      csvData = results.data;
+      columnNames = results.meta.fields;
+      localStorage.setItem("lastCsv", JSON.stringify(csvData));
+      showPreviewTable(csvData);
+      showColumnSelector();
+    }
+  });
+});
+
+function showPreviewTable(data) {
+  const container = document.getElementById("columnSelect");
+  container.innerHTML = "<h3>CSV Preview (first 5 rows)</h3>";
+  const table = document.createElement("table");
+  const headerRow = document.createElement("tr");
+  Object.keys(data[0]).forEach(col => {
+    const th = document.createElement("th");
+    th.textContent = col;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
+  data.slice(0, 5).forEach(row => {
+    const tr = document.createElement("tr");
+    Object.values(row).forEach(val => {
+      const td = document.createElement("td");
+      td.textContent = val;
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
+  container.appendChild(table);
+}
+
+function showColumnSelector() {
+  const container = document.getElementById("columnSelect");
+  const uuidGuess = columnNames.find(c => c.toLowerCase().includes("uuid") || c.toLowerCase().endsWith("id"));
+  container.innerHTML += `
+    <label>Display column:</label>
+    <select id="displayCol">
+      ${columnNames.map(col => `<option value="\${col}">\${col}</option>`).join("")}
+    </select>
+    <label style="margin-left: 1em;">UUID column:</label>
+    <select id="uuidCol">
+      ${columnNames.map(col => `<option value="\${col}">\${col}</option>`).join("")}
+    </select>
+    <button id="generateSurvey" style="margin-left: 1em;">Generate Survey</button>
+  `;
+  if (uuidGuess) {
+    setTimeout(() => (document.getElementById("uuidCol").value = uuidGuess), 100);
+  }
+
+  document.getElementById("generateSurvey").addEventListener("click", () => {
+    const displayCol = document.getElementById("displayCol").value;
+    const uuidCol = document.getElementById("uuidCol").value;
+    localStorage.setItem("displayCol", displayCol);
+    localStorage.setItem("uuidCol", uuidCol);
+    generateSurvey(displayCol, uuidCol);
+  });
+}
+
+function generateSurvey(displayCol, uuidCol) {
+  const choices = csvData.map(row => ({
+    value: row[uuidCol],
+    text: row[displayCol]
+  }));
+
+  const surveyJson = {
+    title: "Course Selection",
+    questions: [
+      {
+        type: "dropdown",
+        name: "selected_option",
+        title: `Choose from column: \${displayCol}`,
+        choices: choices
+      }
+    ]
+  };
+
+  const survey = new Survey.Model(surveyJson);
+  survey.onComplete.add(async sender => {
+    const selectedUuid = sender.data.selected_option;
+    const selectedRow = csvData.find(row => row[uuidCol] === selectedUuid);
+    const displayText = selectedRow ? selectedRow[displayCol] : null;
+
+    const payload = {
+      uuid: selectedUuid,
+      display_text: displayText,
+      all_responses: sender.data
+    };
+
+    const res = await fetch("/api/survey", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) alert("✅ Your response was successfully saved!");
+  });
+
+  document.getElementById("surveyContainer").innerHTML = "";
+  $("#surveyContainer").Survey({ model: survey });
+  document.getElementById("viewResponses").style.display = "inline-block";
+}
+
+document.getElementById("viewResponses").addEventListener("click", async () => {
+  const res = await fetch("/api/all-responses");
+  const data = await res.json();
+  const div = document.getElementById("responseTable");
+  div.innerHTML = "<h3>Saved Responses</h3>";
+  for (const [uuid, val] of Object.entries(data)) {
+    div.innerHTML += `<p><b>\${uuid}</b>: \${val.display_text} <br><small>\${val.timestamp}</small></p>`;
+  }
+});
+
+// Auto-restore last CSV from localStorage
+window.addEventListener("load", () => {
+  const saved = localStorage.getItem("lastCsv");
+  if (saved) {
+    csvData = JSON.parse(saved);
+    columnNames = Object.keys(csvData[0]);
+    showPreviewTable(csvData);
+    showColumnSelector();
+  }
+});
+EOF
+
+# Example CSV
+cat <<'EOF' > example.csv
+course_name,professor,ta,uuid
+Intro to Econ,Dr. Smith,Alex Lee,uuid-001
+Psychology 101,Dr. Patel,Jamie Wu,uuid-002
+Statistics A,Dr. Nguyen,Chris Li,uuid-003
+EOF
+
+npm install
+echo "✅ Setup complete! Click 'Run' to launch your app in Replit."
