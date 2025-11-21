@@ -45,22 +45,31 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 
 ## Recent Changes (November 21, 2025)
 
+### UI/UX Improvements
+- Fixed navigation bar visibility by removing fixed positioning from Example.vue
+- Navigation bar now properly displays across all routes without overlay issues
+- Moved Field Piping from floating draggable panel to toolbar button integration
+- Added "Show Fields" button to Survey Creator toolbar for cleaner UX
+- Field Piping panel now toggles on/off with fixed right-side positioning
+
 ### CSV Survey Tool Added
 - Created Express backend server (port 3001) with API endpoints for survey responses
-- Integrated Replit Database for persistent storage of survey responses
+- Integrated Replit Database for persistent storage with unique submission IDs
 - Built CsvSurvey.vue component with file upload, column selection, and survey generation
 - Added navigation bar to switch between Survey Creator and CSV Survey tools
 - Configured Vite proxy to forward API requests to Express backend
 - Added sample CSV file for testing (`public/sample-courses.csv`)
 - Updated package.json to run both Vite and Express servers concurrently
+- Implemented inline error/success messaging for better user feedback
+- Fixed persistence bug: each submission now gets unique ID (no overwrites)
 
 ### Field Piping Feature Added
-- Created PipeAutocomplete.vue component with field insertion capability
+- Created FieldPipingSidebar.vue component with field insertion capability
 - Implemented focus tracking for SurveyJS contenteditable elements
-- Added event propagation handling to prevent SurveyJS editor closure
 - Supports both standard INPUT/TEXTAREA and contenteditable elements
-- Draggable panel with search functionality
+- Panel with search functionality and close button
 - Fixed Selection API range handling for robust insertion
+- Accessible via "Show Fields" toolbar button in Survey Creator
 
 ## Recent Changes (November 20, 2025)
 
