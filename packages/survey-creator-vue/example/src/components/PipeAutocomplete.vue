@@ -96,28 +96,25 @@ onMounted(async () => {
   
   // Prevent SurveyJS from closing the active editor when clicking the panel
   // SurveyJS has global pointerdown listeners that close editors on "outside" clicks
+  // We stop propagation in BUBBLE phase so events still reach our buttons first
   if (panelContainer.value) {
     console.log('Field Piping panel: Adding event listeners to prevent SurveyJS editor closure');
     
     panelContainer.value.addEventListener('pointerdown', (e) => {
-      console.log('Field Piping panel: pointerdown event, stopping propagation');
-      // Stop the event from reaching SurveyJS' global handlers
+      console.log('Field Piping panel: pointerdown event in bubble phase, stopping propagation');
+      // Stop the event from bubbling up to SurveyJS' global handlers
       e.stopPropagation();
-      e.stopImmediatePropagation();
-    }, true); // Use capture phase
+    }, false); // Use bubble phase, not capture!
     
     panelContainer.value.addEventListener('mousedown', (e) => {
-      console.log('Field Piping panel: mousedown event, stopping propagation');
+      console.log('Field Piping panel: mousedown event in bubble phase, stopping propagation');
       e.stopPropagation();
-      e.stopImmediatePropagation();
-    }, true); // Use capture phase
+    }, false); // Use bubble phase, not capture!
     
     panelContainer.value.addEventListener('click', (e) => {
-      console.log('Field Piping panel: click event, stopping propagation');
-      // Also stop click events
+      console.log('Field Piping panel: click event in bubble phase, stopping propagation');
       e.stopPropagation();
-      e.stopImmediatePropagation();
-    }, true); // Use capture phase
+    }, false); // Use bubble phase, not capture!
   } else {
     console.error('Field Piping panel: panelContainer.value is null!');
   }
