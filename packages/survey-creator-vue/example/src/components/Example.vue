@@ -182,12 +182,16 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
         </div>
         
-        <!-- Field Piping Sidebar (always mounted, collapses to icon) -->
-        <div class="field-piping-wrapper">
+        <!-- Show Fields in Property Grid -->
+        <div class="show-fields-in-grid">
+          <button @click="showFieldPiping = !showFieldPiping" class="show-fields-toggle-btn" title="Toggle field references panel">
+            🔗 Show Fields
+          </button>
           <FieldPipingSidebar 
+            v-if="showFieldPiping"
             :creator="creator" 
-            :isOpen="showFieldPiping"
-            @toggle="showFieldPiping = !showFieldPiping"
+            :isOpen="true"
+            @toggle="showFieldPiping = false"
             @close="showFieldPiping = false" 
           />
         </div>
@@ -224,26 +228,28 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   flex-direction: column;
 }
 
-.field-piping-wrapper {
+.show-fields-in-grid {
   position: fixed;
-  top: 125px;
   right: 20px;
+  top: 125px;
   z-index: 1000;
 }
 
-.field-piping-container {
-  position: fixed;
-  top: 125px;
-  right: 20px;
-  width: 320px;
-  max-height: calc(100vh - 150px);
+.show-fields-toggle-btn {
+  display: block;
+  padding: 8px 12px;
   background: white;
+  color: #1ab394;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.show-fields-toggle-btn:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 </style>
