@@ -51,6 +51,8 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - Moved Field Piping from floating draggable panel to toolbar button integration
 - Added "Show Fields" button to Survey Creator toolbar for cleaner UX
 - Field Piping panel now toggles on/off with fixed right-side positioning
+- Fixed blank space at bottom of site using pure flex layout (flex:1, min-height:0)
+- Implemented proper viewport filling while preserving natural document scrolling
 
 ### CSV Survey Tool Added
 - Created Express backend server (port 3001) with API endpoints for survey responses
