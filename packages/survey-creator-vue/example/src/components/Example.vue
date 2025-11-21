@@ -138,17 +138,23 @@ import { SurveyCreatorComponent } from "survey-creator-vue";
 </template>
 <style scoped>
 .creator-host {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
   flex: 1;
-  min-height: 0;
+  position: relative;
 }
 
 .creator-wrapper {
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+.creator-wrapper :deep(.svc-creator) {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .field-piping-container {
