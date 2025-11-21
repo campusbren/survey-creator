@@ -14,12 +14,22 @@ const showFieldPiping = ref(false);
 const showCsvImport = ref(false);
 const canImportCsv = ref(false);
 
-// Provide separate open and close functions to avoid toggle conflicts
-provide('openFieldPiping', () => {
-  showFieldPiping.value = true;
-  console.log('Field Piping Sidebar opened');
+// Add "Show Fields" button to the toolbar
+const fieldPipingAction = new Action({
+  id: "show-fields",
+  title: "🔗 Show Fields",
+  tooltip: "Insert field references (piping)",
+  visible: true,
+  action: () => {
+    showFieldPiping.value = !showFieldPiping.value;
+    console.log('Show Fields clicked from toolbar, showFieldPiping:', showFieldPiping.value);
+  }
 });
 
+// Add the action to the top toolbar
+creator.toolbar.actions.push(fieldPipingAction);
+
+// Provide close function (opening is now handled by sidebar action)
 provide('closeFieldPiping', () => {
   showFieldPiping.value = false;
   console.log('Field Piping Sidebar closed');

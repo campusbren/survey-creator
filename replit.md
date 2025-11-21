@@ -50,14 +50,12 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 ### UI/UX Improvements
 - Fixed navigation bar visibility by removing fixed positioning from Example.vue
 - Navigation bar now properly displays across all routes without overlay issues
-- **Show Fields Button**: Properly integrated into property panel sidebar
-  - Green button with link icon (🔗 Show Fields)
-  - Appears directly below the search bar in the property panel
+- **Show Fields Button**: Added to top toolbar for easy access
+  - "🔗 Show Fields" button appears in the main toolbar
   - Toggles Field Piping Sidebar on/off
-  - Implemented by overriding the `svc-property-grid` component with PropertyGridWrapper.vue
-  - Registered with ComponentFactory before app mount for proper integration
-  - Uses Vue provide/inject pattern for state management
-- Field Piping panel toggles on/off with right-side positioning
+  - Implemented using SurveyJS Creator's toolbar actions API (`creator.toolbar.actions.push()`)
+  - Clean integration without custom component overrides
+- Field Piping panel slides in from the right with fixed positioning
 - Simplified layout with clean CSS approach
 - Clean, professional interface without excessive layout overrides
 
@@ -84,16 +82,16 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 
 ### Field Piping Feature  
 - Created FieldPipingSidebar.vue component with field insertion capability
-- Implemented focus tracking for SurveyJS contenteditable elements
+- Inserts field references (like `{firstName}`) into question titles and descriptions
+- Updates SurveyJS Creator data model directly for persistence
 - Supports both standard INPUT/TEXTAREA and contenteditable elements
-- Panel with search functionality, collapsible sections, and close button
+- Panel with search functionality, field browser, and close button
 - Fixed Selection API range handling for robust insertion
-- **Access Method**: "Show Fields" button integrated into property panel sidebar
-  - Button appears below search bar when property panel is visible
-  - Implemented via PropertyGridWrapper.vue component override
-  - Registered using ComponentFactory.Instance.registerComponent()
-  - Uses Vue provide/inject for communication with parent component
-  - Properly declared Vue emits to avoid warnings
+- **Access Method**: "🔗 Show Fields" button in top toolbar
+  - Button appears in main toolbar for easy access
+  - Click to toggle Field Piping Sidebar on/off
+  - Implemented using SurveyJS Creator's toolbar API
+  - No custom component registration required
 
 ## Recent Changes (November 20, 2025)
 
