@@ -50,13 +50,15 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 ### UI/UX Improvements
 - Fixed navigation bar visibility by removing fixed positioning from Example.vue
 - Navigation bar now properly displays across all routes without overlay issues
-- **Show Fields Button**: Positioned at top-right of property panel area for easy access
+- **Show Fields Button**: Properly integrated into property panel sidebar
   - Green button with link icon (🔗 Show Fields)
+  - Appears directly below the search bar in the property panel
   - Toggles Field Piping Sidebar on/off
-  - Implemented using CSS positioning (absolute positioning at top: 60px, right: 12px)
-  - Clean integration without modifying SurveyJS core components
-- Field Piping panel now toggles on/off with right-side positioning
-- Simplified layout with clean CSS approach (height: 100% on creator wrapper)
+  - Implemented by overriding the `svc-property-grid` component with PropertyGridWrapper.vue
+  - Registered with ComponentFactory before app mount for proper integration
+  - Uses Vue provide/inject pattern for state management
+- Field Piping panel toggles on/off with right-side positioning
+- Simplified layout with clean CSS approach
 - Clean, professional interface without excessive layout overrides
 
 ### CSV Survey Tool Added
@@ -86,9 +88,11 @@ This is a demonstration of **SurveyJS Creator**, an extensible drag-and-drop for
 - Supports both standard INPUT/TEXTAREA and contenteditable elements
 - Panel with search functionality, collapsible sections, and close button
 - Fixed Selection API range handling for robust insertion
-- **Access Method**: "Show Fields" button positioned at top-right of property panel
-  - Button appears when property panel is visible
-  - Clean CSS-based positioning without component overrides
+- **Access Method**: "Show Fields" button integrated into property panel sidebar
+  - Button appears below search bar when property panel is visible
+  - Implemented via PropertyGridWrapper.vue component override
+  - Registered using ComponentFactory.Instance.registerComponent()
+  - Uses Vue provide/inject for communication with parent component
   - Properly declared Vue emits to avoid warnings
 
 ## Recent Changes (November 20, 2025)

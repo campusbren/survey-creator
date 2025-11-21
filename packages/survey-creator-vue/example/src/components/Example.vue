@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
 import { Action } from 'survey-core';
 import FieldPipingSidebar from './FieldPipingSidebar.vue';
 import CsvImportPanel from './CsvImportPanel.vue';
@@ -13,6 +13,11 @@ creator.expandCollapseButtonVisibility = "onhover";
 const showFieldPiping = ref(false);
 const showCsvImport = ref(false);
 const canImportCsv = ref(false);
+
+// Provide toggle function for PropertyGridWrapper
+provide('toggleFieldPiping', () => {
+  showFieldPiping.value = !showFieldPiping.value;
+});
 
 // Add CSV Import toolbar button - only visible when question has choices
 const csvImportAction = new Action({
@@ -180,17 +185,6 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
     <div class="creator-host">
         <div class="creator-wrapper">
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
-          
-          <!-- Show Fields Button positioned near property panel -->
-          <div class="show-fields-button-wrapper">
-            <button 
-              class="show-fields-btn" 
-              @click="showFieldPiping = !showFieldPiping"
-              title="Toggle field references panel"
-            >
-              🔗 Show Fields
-            </button>
-          </div>
         </div>
         
         <!-- Show Fields Sidebar Content -->
@@ -232,36 +226,5 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-/* Show Fields button positioned near property panel */
-.show-fields-button-wrapper {
-  position: absolute;
-  top: 60px;
-  right: 12px;
-  z-index: 100;
-  width: 300px;
-  pointer-events: none;
-}
-
-.show-fields-btn {
-  display: block;
-  width: 100%;
-  padding: 10px 12px;
-  background: #1ab394;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-  font-size: 14px;
-  pointer-events: all;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.show-fields-btn:hover {
-  background: #159a80;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 </style>
