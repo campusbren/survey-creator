@@ -143,16 +143,22 @@ const setupFocusTracking = () => {
 
 const insertField = (fieldName) => {
   console.log('insertField called with:', fieldName);
-  console.log('focusedInput.value:', focusedInput.value);
   
-  if (!focusedInput.value) {
-    alert('Please click inside a text field first (in the Designer tab, click on a question, then click in the "Question title" or "Description" field in the property panel on the right).');
+  const text = `{${fieldName}}`;
+  
+  // Try to get the currently selected element in the creator
+  const selectedElement = (props.creator as any).selectedElement;
+  console.log('Selected element:', selectedElement);
+  
+  if (!selectedElement) {
+    alert('Please select a question first by clicking on it in the Designer view.');
     return;
   }
-
-  const text = `{${fieldName}}`;
-  const target = focusedInput.value;
-  console.log('Attempting to insert:', text, 'into:', target);
+  
+  // Try to insert via the focused input for immediate visual feedback
+  if (focusedInput.value) {
+    const target = focusedInput.value;
+    console.log('Attempting to insert:', text, 'into focused input:', target);
 
   // For contenteditable elements (SurveyJS uses these)
   if (target.contentEditable === 'true' || target.getAttribute('contenteditable') === 'true') {
@@ -187,6 +193,9 @@ const insertField = (fieldName) => {
       }, 10);
       
       console.log('Inserted field via Selection API:', text, 'New content:', target.textContent);
+      
+      // Now update the SurveyJS model to persist the change
+      updateSurveyJSModel(selectedElement, target);
     } else {
       // Fallback: append to the end
       target.textContent = (target.textContent || '') + text;
@@ -198,6 +207,9 @@ const insertField = (fieldName) => {
         target.dispatchEvent(new Event('focus', { bubbles: true }));
       }, 10);
       console.log('Inserted field (fallback):', text, 'New content:', target.textContent);
+      
+      // Now update the SurveyJS model to persist the change
+      updateSurveyJSModel(selectedElement, target);
     }
   } 
   // For standard input/textarea elements
@@ -218,6 +230,41 @@ const insertField = (fieldName) => {
     }, 10);
     
     console.log('Inserted field into input:', text, 'New value:', target.value);
+    
+    // Now update the SurveyJS model to persist the change
+    updateSurveyJSModel(selectedElement, target);
+  } else {
+    console.log('No valid input element found, trying to insert directly into model');
+    insertDirectlyIntoModel(selectedElement, text);
+  }
+};
+
+const updateSurveyJSModel = (element, domElement) => {
+  if (!element || !domElement) return;
+  
+  const newValue = domElement.textContent || domElement.value || '';
+  console.log('Updating SurveyJS model with new value:', newValue);
+  
+  // Try to update the title property (most common case)
+  if (element.title !== undefined) {
+    element.title = newValue;
+    console.log('Updated element.title to:', newValue);
+  }
+  // Try description
+  else if (element.description !== undefined) {
+    element.description = newValue;
+    console.log('Updated element.description to:', newValue);
+  }
+};
+
+const insertDirectlyIntoModel = (element, text) => {
+  if (!element) return;
+  
+  // Insert into title by default
+  if (element.title !== undefined) {
+    const currentTitle = element.title || '';
+    element.title = currentTitle + text;
+    console.log('Directly inserted into title:', element.title);
   }
 };
 
