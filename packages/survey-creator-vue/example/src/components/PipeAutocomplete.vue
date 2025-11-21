@@ -16,6 +16,7 @@ const panelX = ref(10);
 const panelY = ref(10);
 const isDragging = ref(false);
 const dragStart = ref({ x: 0, y: 0 });
+const isInserting = ref(false);
 
 const availableFields = computed(() => {
   const fields = [];
@@ -54,6 +55,9 @@ const isInsidePanel = (target) => {
 const setupFocusTracking = () => {
   // Track which input has focus using focusin (bubbles better than focus)
   const trackFocus = (e) => {
+    // Skip tracking if we're in the middle of inserting
+    if (isInserting.value) return;
+    
     // Don't update if clicking inside the Field Piping panel
     if (isInsidePanel(e.target)) return;
     
@@ -68,6 +72,9 @@ const setupFocusTracking = () => {
   
   // Also track click events on inputs as fallback
   const trackClick = (e) => {
+    // Skip tracking if we're in the middle of inserting
+    if (isInserting.value) return;
+    
     // Don't update if clicking inside the Field Piping panel
     if (isInsidePanel(e.target)) return;
     
@@ -117,6 +124,9 @@ const insertField = (e, fieldName) => {
     return;
   }
 
+  // Mark that we're inserting to prevent focus tracking from interfering
+  isInserting.value = true;
+
   const input = focusedInput.value;
   const startPos = input.selectionStart || 0;
   const endPos = input.selectionEnd || 0;
@@ -135,6 +145,11 @@ const insertField = (e, fieldName) => {
   // Refocus the original input
   input.focus();
   input.selectionStart = input.selectionEnd = startPos + fieldCode.length;
+  
+  // Re-enable focus tracking after everything settles
+  setTimeout(() => {
+    isInserting.value = false;
+  }, 50);
 };
 </script>
 
