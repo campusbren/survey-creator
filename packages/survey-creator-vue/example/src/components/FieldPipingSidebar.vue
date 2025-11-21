@@ -2,13 +2,16 @@
   <div class="field-piping-sidebar">
     <div class="sidebar-header">
       <div class="header-content">
-        <h3>🔗 Field Piping</h3>
+        <h3>🔗 Show Fields</h3>
+        <button @click="toggleFields" class="toggle-button" :title="fieldsVisible ? 'Hide Fields' : 'Show Fields'">
+          {{ fieldsVisible ? '−' : '+' }}
+        </button>
         <button @click="$emit('close')" class="close-button" title="Close">✕</button>
       </div>
       <p class="sidebar-description">Insert dynamic field references into your text</p>
     </div>
 
-    <div class="search-box">
+    <div v-if="fieldsVisible" class="search-box">
       <input
         v-model="searchText"
         type="text"
@@ -17,7 +20,7 @@
       />
     </div>
 
-    <div v-if="filteredFields.length > 0" class="fields-list">
+    <div v-if="fieldsVisible && filteredFields.length > 0" class="fields-list">
       <div
         v-for="field in filteredFields"
         :key="field"
@@ -29,16 +32,15 @@
       </div>
     </div>
 
-    <div v-else class="no-fields">
-      <p v-if="availableFields.length === 0">
-        No fields available yet. Add questions to your survey to see them here.
-      </p>
-      <p v-else>
-        No fields match your search.
-      </p>
+    <div v-if="fieldsVisible && availableFields.length === 0" class="no-fields">
+      <p>No fields available yet. Add questions to your survey to see them here.</p>
     </div>
 
-    <div class="usage-help">
+    <div v-if="fieldsVisible && availableFields.length > 0 && filteredFields.length === 0" class="no-fields">
+      <p>No fields match your search.</p>
+    </div>
+
+    <div v-if="fieldsVisible" class="usage-help">
       <strong>How to use:</strong>
       <ol>
         <li>Click a text field in your survey to edit it</li>
@@ -59,6 +61,7 @@ const props = defineProps({
   }
 });
 
+const fieldsVisible = ref(true);
 const searchText = ref('');
 const focusedInput = ref(null);
 
@@ -83,6 +86,10 @@ const filteredFields = computed(() => {
   const search = searchText.value.toLowerCase();
   return availableFields.value.filter(f => f.toLowerCase().includes(search));
 });
+
+const toggleFields = () => {
+  fieldsVisible.value = !fieldsVisible.value;
+};
 
 const isEditableElement = (el) => {
   if (!el) return false;

@@ -37,22 +37,6 @@ creator.onPropertyChanged.add((sender, options) => {
   }
 });
 
-// Add Field Piping toolbar button
-const fieldPipingAction = new Action({
-  id: "show-field-piping",
-  title: "Show Fields",
-  tooltip: "Toggle Field Piping Panel",
-  iconName: "icon-text",
-  css: "sv-action-bar-item",
-  visible: true,
-  action: () => {
-    showFieldPiping.value = !showFieldPiping.value;
-    console.log('Field Piping toggled:', showFieldPiping.value);
-  }
-});
-
-creator.toolbar.actions.push(fieldPipingAction);
-
 // Enable dynamic text expressions in page titles and descriptions
 creator.survey.onTextMarkdown.add((survey, options) => {
   options.html = options.text;
