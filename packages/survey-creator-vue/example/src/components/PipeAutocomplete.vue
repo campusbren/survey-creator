@@ -215,16 +215,28 @@ const insertField = (e, fieldName) => {
     
     // Use the Selection API for contenteditable elements
     const selection = window.getSelection();
-    
-    // Check if there's a valid selection/range
     let range;
-    if (selection.rangeCount > 0) {
-      range = selection.getRangeAt(0);
-    } else {
-      // Create a new range at the end of the content
+    
+    try {
+      // Check if there's a valid selection/range
+      if (selection && selection.rangeCount > 0) {
+        range = selection.getRangeAt(0);
+        
+        // Make sure the range is inside our input element
+        if (!input.contains(range.commonAncestorContainer)) {
+          throw new Error('Range not in element');
+        }
+      } else {
+        throw new Error('No selection');
+      }
+    } catch (e) {
+      // Create a new range at the end of the content if selection is invalid
+      console.log('Creating new range at end of content');
       range = document.createRange();
       range.selectNodeContents(input);
-      range.collapse(false);
+      range.collapse(false); // Collapse to end
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
     
     // Delete the current selection (if any)
