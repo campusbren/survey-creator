@@ -137,6 +137,7 @@
 import { ref, onMounted } from 'vue';
 import Papa from 'papaparse';
 import { Model } from 'survey-core';
+import 'survey-core/survey-core.min.css';
 
 const csvData = ref([]);
 const columnNames = ref([]);
@@ -224,6 +225,11 @@ const uploadFile = () => {
 };
 
 const generateSurvey = () => {
+  console.log('🎯 Generate Survey clicked!');
+  console.log('Display Column:', displayColumn.value);
+  console.log('UUID Column:', uuidColumn.value);
+  console.log('CSV Data:', csvData.value);
+  
   if (!displayColumn.value || !uuidColumn.value) {
     alert('Please select both display and UUID columns');
     return;
@@ -243,6 +249,8 @@ const generateSurvey = () => {
     value: row[uuidColumn.value],
     text: row[displayColumn.value]
   }));
+  
+  console.log('Survey Choices:', choices);
 
   const surveyJson = {
     title: 'CSV-Based Selection Survey',
@@ -259,6 +267,8 @@ const generateSurvey = () => {
     showQuestionNumbers: 'off',
     completeText: 'Submit Response'
   };
+  
+  console.log('Survey JSON:', surveyJson);
 
   const survey = new Model(surveyJson);
 
@@ -309,12 +319,18 @@ const generateSurvey = () => {
   });
 
   const container = document.getElementById('surveyContainer');
+  console.log('Survey Container element:', container);
+  
   if (container) {
     container.innerHTML = '';
     survey.render(container);
+    console.log('✅ Survey rendered successfully!');
+  } else {
+    console.error('❌ Survey container not found!');
   }
 
   surveyGenerated.value = true;
+  console.log('surveyGenerated set to:', surveyGenerated.value);
 };
 
 const resetSurvey = () => {
