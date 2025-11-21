@@ -12,6 +12,30 @@ creator.expandCollapseButtonVisibility = "onhover";
 
 const showFieldPiping = ref(false);
 const showCsvImport = ref(false);
+const canImportCsv = ref(false);
+
+// Add CSV Import toolbar button - only visible when question has choices
+const csvImportAction = new Action({
+  id: "import-csv",
+  title: "Import CSV",
+  tooltip: "Import Answer Choices from CSV",
+  iconName: "icon-attachment",
+  css: "sv-action-bar-item",
+  get visible() { return canImportCsv.value; },
+  action: () => {
+    showCsvImport.value = true;
+  }
+});
+
+creator.toolbar.actions.push(csvImportAction);
+
+// Monitor for when user selects a question with choices
+creator.onPropertyChanged.add((sender, options) => {
+  if (options.name === 'selectedElement') {
+    const element = sender.selectedElement;
+    canImportCsv.value = !!(element && 'choices' in element);
+  }
+});
 
 // Add Field Piping toolbar button
 const fieldPipingAction = new Action({
@@ -27,21 +51,7 @@ const fieldPipingAction = new Action({
   }
 });
 
-// Add CSV Import toolbar button
-const csvImportAction = new Action({
-  id: "import-csv",
-  title: "Import CSV",
-  tooltip: "Import Answer Choices from CSV",
-  iconName: "icon-attachment",
-  css: "sv-action-bar-item",
-  visible: true,
-  action: () => {
-    showCsvImport.value = true;
-  }
-});
-
 creator.toolbar.actions.push(fieldPipingAction);
-creator.toolbar.actions.push(csvImportAction);
 
 // Enable dynamic text expressions in page titles and descriptions
 creator.survey.onTextMarkdown.add((survey, options) => {
@@ -193,12 +203,15 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
           <FieldPipingSidebar :creator="creator" @close="showFieldPiping = false" />
         </div>
 
-        <!-- CSV Import Panel (modal) -->
+        <!-- CSV Import Panel (modal) - triggered via toolbar when choices panel is active -->
         <CsvImportPanel 
           :isOpen="showCsvImport"
           :onImport="handleCsvImport"
           @close="showCsvImport = false"
         />
+        
+        <!-- Add Import CSV button to the SurveyJS Creator property grid -->
+        <div id="import-csv-button-container"></div>
     </div>
 </template>
 <style scoped>

@@ -130,10 +130,24 @@ const resetUpload = () => {
 };
 
 const importChoices = () => {
-  const choices = csvData.value.map(row => ({
-    value: row[valueCol.value],
-    text: row[displayCol.value]
-  }));
+  const choices = csvData.value
+    .filter(row => {
+      // Only include rows where both display and value columns are non-empty
+      const displayValue = row[displayCol.value];
+      const valueValue = row[valueCol.value];
+      return displayValue && displayValue.toString().trim() !== '' && 
+             valueValue && valueValue.toString().trim() !== '';
+    })
+    .map(row => ({
+      value: row[valueCol.value],
+      text: row[displayCol.value]
+    }));
+  
+  if (choices.length === 0) {
+    alert('No valid rows found. Please ensure both columns have values.');
+    return;
+  }
+  
   props.onImport(choices);
   emit('close');
   resetUpload();

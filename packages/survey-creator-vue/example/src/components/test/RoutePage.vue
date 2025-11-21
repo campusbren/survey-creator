@@ -8,9 +8,6 @@
         <router-link to="/" class="nav-link">
           📝 Survey Creator
         </router-link>
-        <router-link to="/csv-survey" class="nav-link">
-          📊 CSV Survey
-        </router-link>
       </div>
     </nav>
     <div class="main-content">
