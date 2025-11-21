@@ -1,10 +1,5 @@
 <template>
-  <!-- Collapsed Icon Button -->
-  <button v-if="!isOpen" class="show-fields-icon" @click="emit('toggle')" title="Show Fields">
-    🔗
-  </button>
-  
-  <!-- Expanded Sidebar -->
+  <!-- Expanded Sidebar (no collapsed button - it's in the property grid now) -->
   <div v-if="isOpen" class="field-piping-sidebar">
     <div class="sidebar-header">
       <div class="header-content">
@@ -12,7 +7,7 @@
         <button @click="toggleFields" class="toggle-button" :title="fieldsVisible ? 'Hide Fields' : 'Show Fields'">
           {{ fieldsVisible ? '−' : '+' }}
         </button>
-        <button @click="emit('close')" class="close-button" title="Close">✕</button>
+        <button @click="handleClose" class="close-button" title="Close">✕</button>
       </div>
       <p class="sidebar-description">Insert dynamic field references into your text</p>
     </div>
@@ -58,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
 
 const props = defineProps({
   creator: {
@@ -71,7 +66,8 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['toggle', 'close']);
+// Inject the close function from parent
+const closeFieldPiping = inject<() => void>('closeFieldPiping');
 
 const fieldsVisible = ref(true);
 const searchText = ref('');
@@ -101,6 +97,14 @@ const filteredFields = computed(() => {
 
 const toggleFields = () => {
   fieldsVisible.value = !fieldsVisible.value;
+};
+
+const handleClose = () => {
+  if (closeFieldPiping) {
+    closeFieldPiping();
+  } else {
+    console.error('closeFieldPiping function not found - provide/inject may not be working');
+  }
 };
 
 const isEditableElement = (el) => {

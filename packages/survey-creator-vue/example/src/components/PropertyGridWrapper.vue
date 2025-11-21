@@ -29,15 +29,14 @@ import { useBase } from "survey-vue3-ui";
 const props = defineProps<{ model: PropertyGridViewModel }>();
 useBase(() => props.model);
 
-const toggleFieldPiping = inject<() => void>('toggleFieldPiping');
+const openFieldPiping = inject<() => void>('openFieldPiping');
 
 const handleToggleFields = () => {
-  console.log('Show Fields button clicked!', toggleFieldPiping);
-  if (toggleFieldPiping) {
-    toggleFieldPiping();
-    console.log('Toggle function called');
+  console.log('Show Fields button clicked!');
+  if (openFieldPiping) {
+    openFieldPiping();
   } else {
-    console.error('toggleFieldPiping function not found - provide/inject may not be working');
+    console.error('openFieldPiping function not found - provide/inject may not be working');
   }
 };
 </script>

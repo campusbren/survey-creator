@@ -14,9 +14,15 @@ const showFieldPiping = ref(false);
 const showCsvImport = ref(false);
 const canImportCsv = ref(false);
 
-// Provide toggle function for PropertyGridWrapper
-provide('toggleFieldPiping', () => {
-  showFieldPiping.value = !showFieldPiping.value;
+// Provide separate open and close functions to avoid toggle conflicts
+provide('openFieldPiping', () => {
+  showFieldPiping.value = true;
+  console.log('Field Piping Sidebar opened');
+});
+
+provide('closeFieldPiping', () => {
+  showFieldPiping.value = false;
+  console.log('Field Piping Sidebar closed');
 });
 
 // Add CSV Import toolbar button - only visible when question has choices
@@ -192,8 +198,6 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
           v-if="showFieldPiping"
           :creator="creator" 
           :isOpen="true"
-          @toggle="showFieldPiping = false"
-          @close="showFieldPiping = false" 
         />
 
         <!-- CSV Import Panel (modal) - triggered via toolbar when choices panel is active -->
