@@ -27,21 +27,10 @@ const csvImportAction = new Action({
   }
 });
 
-// Add "Show Fields" toolbar button - always visible
-const showFieldsAction = new Action({
-  id: "show-fields",
-  title: "Show Fields",
-  tooltip: "Toggle Field Piping Panel",
-  iconName: "icon-text",
-  css: "sv-action-bar-item",
-  visible: true,
-  action: () => {
-    showFieldPiping.value = !showFieldPiping.value;
-  }
-});
-
-creator.toolbar.actions.push(showFieldsAction);
 creator.toolbar.actions.push(csvImportAction);
+
+// Start with field piping sidebar visible
+showFieldPiping.value = true;
 
 // Monitor for when user selects a question with choices
 creator.onPropertyChanged.add((sender, options) => {
