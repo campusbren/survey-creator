@@ -1,6 +1,6 @@
 <template>
   <!-- Collapsed Icon Button -->
-  <button v-if="!isOpen" class="show-fields-icon" @click="$emit('toggle')" title="Show Fields">
+  <button v-if="!isOpen" class="show-fields-icon" @click="emit('toggle')" title="Show Fields">
     🔗
   </button>
   
@@ -12,7 +12,7 @@
         <button @click="toggleFields" class="toggle-button" :title="fieldsVisible ? 'Hide Fields' : 'Show Fields'">
           {{ fieldsVisible ? '−' : '+' }}
         </button>
-        <button @click="$emit('close')" class="close-button" title="Close">✕</button>
+        <button @click="emit('close')" class="close-button" title="Close">✕</button>
       </div>
       <p class="sidebar-description">Insert dynamic field references into your text</p>
     </div>
@@ -70,6 +70,8 @@ const props = defineProps({
     default: false
   }
 });
+
+const emit = defineEmits(['toggle', 'close']);
 
 const fieldsVisible = ref(true);
 const searchText = ref('');

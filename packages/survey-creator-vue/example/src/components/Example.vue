@@ -29,20 +29,6 @@ const csvImportAction = new Action({
 
 creator.toolbar.actions.push(csvImportAction);
 
-// Inject Show Fields button into the property panel
-setTimeout(() => {
-  const propertyPanel = document.querySelector('.svc-property-panel');
-  if (propertyPanel) {
-    const showFieldsBtn = document.createElement('button');
-    showFieldsBtn.className = 'show-fields-property-btn';
-    showFieldsBtn.innerHTML = '🔗 Show Fields';
-    showFieldsBtn.onclick = () => {
-      showFieldPiping.value = !showFieldPiping.value;
-    };
-    propertyPanel.appendChild(showFieldsBtn);
-  }
-}, 1000);
-
 // Monitor for when user selects a question with choices
 creator.onPropertyChanged.add((sender, options) => {
   if (options.name === 'selectedElement') {
@@ -195,8 +181,16 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
         <div class="creator-wrapper">
           <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
           
-          <!-- Show Fields Panel Injected into Property Panel -->
-          <div id="show-fields-panel-injection"></div>
+          <!-- Show Fields Button in Property Grid -->
+          <div class="show-fields-button-wrapper">
+            <button 
+              class="show-fields-property-btn" 
+              @click="showFieldPiping = !showFieldPiping"
+              title="Toggle field references panel"
+            >
+              🔗 Show Fields
+            </button>
+          </div>
         </div>
         
         <!-- Show Fields Sidebar Content -->
@@ -240,11 +234,19 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   flex-direction: column;
 }
 
-:deep(.show-fields-property-btn) {
+.show-fields-button-wrapper {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+  z-index: 100;
+  width: 300px;
+  pointer-events: none;
+}
+
+.show-fields-property-btn {
   display: block;
   width: 100%;
   padding: 10px 12px;
-  margin: 12px 0;
   background: #1ab394;
   color: white;
   border: none;
@@ -253,9 +255,12 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   font-weight: 500;
   transition: all 0.2s;
   font-size: 14px;
+  pointer-events: all;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-:deep(.show-fields-property-btn:hover) {
+.show-fields-property-btn:hover {
   background: #159a80;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 </style>
