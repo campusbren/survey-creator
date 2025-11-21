@@ -83,7 +83,6 @@ import $ from 'jquery';
 .main-content {
   flex: 1;
   min-height: 0;
-  overflow: auto;
   display: flex;
   flex-direction: column;
 }

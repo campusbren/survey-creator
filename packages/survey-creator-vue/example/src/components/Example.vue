@@ -126,7 +126,9 @@ import { SurveyCreatorComponent } from "survey-creator-vue";
 </script>
 <template>
     <div class="creator-host">
-        <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
+        <div class="creator-wrapper">
+          <SurveyCreatorComponent :model="creator"></SurveyCreatorComponent>
+        </div>
         
         <!-- Field Piping Sidebar (toggleable) -->
         <div v-if="showFieldPiping" class="field-piping-container">
@@ -141,6 +143,15 @@ import { SurveyCreatorComponent } from "survey-creator-vue";
   display: flex;
   flex-direction: column;
   position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.creator-wrapper {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .field-piping-container {
