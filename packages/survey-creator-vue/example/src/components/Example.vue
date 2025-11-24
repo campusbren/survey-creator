@@ -50,7 +50,7 @@ const csvImportAction = new Action({
 creator.toolbar.actions.push(csvImportAction);
 
 // Monitor for when user selects a question with choices
-creator.onPropertyChanged.add((sender, options) => {
+creator.onPropertyChanged.add((sender: any, options: any) => {
   if (options.name === 'selectedElement') {
     const element = sender.selectedElement;
     canImportCsv.value = !!(element && 'choices' in element);
@@ -192,7 +192,7 @@ const handleCsvImport = (choices: Array<{ value: string; text: string }>) => {
   
   // Update choices
   (element as any).choices = choices;
-  console.log('✓ Answer choices imported successfully!', element.choices);
+  console.log('✓ Answer choices imported successfully!', (element as any).choices);
   alert('✓ Answer choices imported! (' + choices.length + ' items)');
 };
 </script>

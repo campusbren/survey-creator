@@ -74,11 +74,11 @@ const searchText = ref('');
 const focusedInput = ref(null);
 
 const availableFields = computed(() => {
-  const fields = [];
+  const fields: string[] = [];
   if (props.creator.survey && props.creator.survey.pages) {
-    props.creator.survey.pages.forEach(page => {
+    props.creator.survey.pages.forEach((page: any) => {
       if (page.elements) {
-        page.elements.forEach(element => {
+        page.elements.forEach((element: any) => {
           if (element.name) {
             fields.push(element.name);
           }
@@ -92,7 +92,7 @@ const availableFields = computed(() => {
 const filteredFields = computed(() => {
   if (!searchText.value) return availableFields.value;
   const search = searchText.value.toLowerCase();
-  return availableFields.value.filter(f => f.toLowerCase().includes(search));
+  return availableFields.value.filter((f: string) => f.toLowerCase().includes(search));
 });
 
 const toggleFields = () => {
@@ -107,7 +107,7 @@ const handleClose = () => {
   }
 };
 
-const isEditableElement = (el) => {
+const isEditableElement = (el: any) => {
   if (!el) return false;
   
   // Standard input/textarea
@@ -125,7 +125,7 @@ const isEditableElement = (el) => {
 };
 
 const setupFocusTracking = () => {
-  const trackFocus = (e) => {
+  const trackFocus = (e: any) => {
     if (isEditableElement(e.target)) {
       console.log('Field Piping: Tracked focus on', e.target);
       focusedInput.value = e.target;
@@ -141,7 +141,7 @@ const setupFocusTracking = () => {
   };
 };
 
-const insertField = (fieldName) => {
+const insertField = (fieldName: string) => {
   console.log('insertField called with:', fieldName);
   
   const text = `{${fieldName}}`;
@@ -157,7 +157,7 @@ const insertField = (fieldName) => {
   
   // Try to insert via the focused input for immediate visual feedback
   if (focusedInput.value) {
-    const target = focusedInput.value;
+    const target = focusedInput.value as any;
     console.log('Attempting to insert:', text, 'into focused input:', target);
 
     // For contenteditable elements (SurveyJS uses these)
@@ -244,7 +244,7 @@ const insertField = (fieldName) => {
   }
 };
 
-const updateSurveyJSModel = (element, domElement) => {
+const updateSurveyJSModel = (element: any, domElement: any) => {
   if (!element || !domElement) return;
   
   const newValue = domElement.textContent || domElement.value || '';
@@ -262,7 +262,7 @@ const updateSurveyJSModel = (element, domElement) => {
   }
 };
 
-const insertDirectlyIntoModel = (element, text) => {
+const insertDirectlyIntoModel = (element: any, text: string) => {
   if (!element) return;
   
   // Insert into title by default

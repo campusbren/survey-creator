@@ -1,0 +1,97 @@
+ moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.3
+npm notice To update run: npm install -g npm@11.6.3
+npm notice
+
+
+> example@0.0.0 build
+> run-p type-check build-only
+
+
+
+> example@0.0.0 build-only
+> vite build
+
+
+
+> example@0.0.0 type-check
+> vue-tsc --noEmit -p tsconfig.app.json --composite false
+
+
+▲ [WARNING] Cannot find base config file "@vue/tsconfig/tsconfig.dom.json" [tsconfig.json]
+
+    ../tsconfig.json:2:13:
+      2 │   "extends": "@vue/tsconfig/tsconfig.dom.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vite v4.5.14 building for production...
+
+transforming...
+
+src/components/Example.vue(55,28): error TS2339: Property 'selectedElement' does not exist on type 'Base'.
+src/components/Example.vue(195,66): error TS2339: Property 'choices' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(83,25): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+src/components/FieldPipingSidebar.vue(95,46): error TS2339: Property 'toLowerCase' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(164,16): error TS2339: Property 'contentEditable' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(164,53): error TS2339: Property 'getAttribute' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(185,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(186,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(187,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(191,18): error TS2339: Property 'focus' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(192,18): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(195,87): error TS2339: Property 'textContent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(201,16): error TS2339: Property 'textContent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(201,38): error TS2339: Property 'textContent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(202,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(203,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(204,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(206,18): error TS2339: Property 'focus' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(207,18): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(209,80): error TS2339: Property 'textContent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(216,21): error TS2339: Property 'tagName' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(216,51): error TS2339: Property 'tagName' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(217,28): error TS2339: Property 'selectionStart' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(218,26): error TS2339: Property 'selectionEnd' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(219,35): error TS2339: Property 'value' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(221,14): error TS2339: Property 'value' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(222,14): error TS2339: Property 'selectionStart' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(222,38): error TS2339: Property 'selectionEnd' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(224,14): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(225,14): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(226,14): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(228,16): error TS2339: Property 'focus' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(229,16): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/FieldPipingSidebar.vue(232,76): error TS2339: Property 'value' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(28,25): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+src/components/PipeAutocomplete.vue(40,4
+src/components/PipeAutocomplete.vue(266,24): error TS2339: Property 'value' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(270,11): error TS2339: Property 'value' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(271,11): error TS2339: Property 'selectionStart' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(271,34): error TS2339: Property 'selectionEnd' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(274,11): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(275,11): error TS2339: Property 'dispatchEvent' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(278,11): error TS2339: Property 'focus' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(279,11): error TS2339: Property 'selectionStart' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(279,34): error TS2339: Property 'selectionEnd' does not exist on type 'never'.
+src/components/PipeAutocomplete.vue(397,22): error TS18047: '$event.target' is possibly 'null'.
+src/components/PipeAutocomplete.vue(397,36): error TS2339: Property 'style' does not exist on type 'EventTarget'.
+src/components/PipeAutocomplete.vue(397,71): error TS18047: '$event.target' is possibly 'null'.
+src/components/PipeAutocomplete.vue(397,85): error TS2339: Property 'style' does not exist on type 'EventTarget'.
+src/components/PipeAutocomplete.vue(398,22): error TS18047: '$event.target' is possibly 'null'.
+src/components/PipeAutocomplete.vue(398,36): error TS2339: Property 'style' does not exist on type 'EventTarget'.
+src/components/PipeAutocomplete.vue(398,71): error TS18047: '$event.target' is possibly 'null'.
+src/components/PipeAutocomplete.vue(398,85): error TS2339: Property 'style' does not exist on type 'EventTarget'.
+
+ERROR: "type-check" exited with 2.

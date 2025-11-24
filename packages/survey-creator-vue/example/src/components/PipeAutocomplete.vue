@@ -19,11 +19,11 @@ const isDragging = ref(false);
 const dragStart = ref({ x: 0, y: 0 });
 
 const availableFields = computed(() => {
-  const fields = [];
+  const fields: string[] = [];
   if (props.creator.survey && props.creator.survey.pages) {
-    props.creator.survey.pages.forEach(page => {
+    props.creator.survey.pages.forEach((page: any) => {
       if (page.elements) {
-        page.elements.forEach(element => {
+        page.elements.forEach((element: any) => {
           if (element.name) {
             fields.push(element.name);
           }
@@ -37,10 +37,10 @@ const availableFields = computed(() => {
 const filteredFields = computed(() => {
   if (!searchText.value) return availableFields.value;
   const search = searchText.value.toLowerCase();
-  return availableFields.value.filter(f => f.toLowerCase().includes(search));
+  return availableFields.value.filter((f: string) => f.toLowerCase().includes(search));
 });
 
-const isInsidePanel = (target) => {
+const isInsidePanel = (target: any) => {
   // Check if the target or any parent is inside the panel
   let el = target;
   while (el && el !== document) {
@@ -52,7 +52,7 @@ const isInsidePanel = (target) => {
   return false;
 };
 
-const isEditableElement = (el) => {
+const isEditableElement = (el: any) => {
   if (!el) return false;
   
   // Standard input/textarea
@@ -71,7 +71,7 @@ const isEditableElement = (el) => {
 
 const setupFocusTracking = () => {
   // Track which element has focus using focusin (bubbles better than focus)
-  const trackFocus = (e) => {
+  const trackFocus = (e: any) => {
     // Skip tracking if we're in the middle of inserting
     if (isInserting.value) return;
     
@@ -89,7 +89,7 @@ const setupFocusTracking = () => {
   document.addEventListener('focusin', trackFocus);
   
   // Also track click events on inputs as fallback
-  const trackClick = (e) => {
+  const trackClick = (e: any) => {
     // Skip tracking if we're in the middle of inserting
     if (isInserting.value) return;
     
@@ -111,7 +111,7 @@ const setupFocusTracking = () => {
   };
 };
 
-const startDrag = (e) => {
+const startDrag = (e: any) => {
   // Only allow dragging from the header, not from buttons or inputs
   if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
   
@@ -120,7 +120,7 @@ const startDrag = (e) => {
   e.preventDefault();
 };
 
-const doDrag = (e) => {
+const doDrag = (e: any) => {
   if (!isDragging.value) return;
   panelX.value = e.clientX - dragStart.value.x;
   panelY.value = e.clientY - dragStart.value.y;
@@ -146,18 +146,20 @@ onMounted(async () => {
   if (panelContainer.value) {
     console.log('Field Piping panel: Adding event listeners to prevent SurveyJS editor closure');
     
-    panelContainer.value.addEventListener('pointerdown', (e) => {
+    const container = panelContainer.value as any;
+    
+    container.addEventListener('pointerdown', (e: any) => {
       console.log('Field Piping panel: pointerdown event in bubble phase, stopping propagation');
       // Stop the event from bubbling up to SurveyJS' global handlers
       e.stopPropagation();
     }, false); // Use bubble phase, not capture!
     
-    panelContainer.value.addEventListener('mousedown', (e) => {
+    container.addEventListener('mousedown', (e: any) => {
       console.log('Field Piping panel: mousedown event in bubble phase, stopping propagation');
       e.stopPropagation();
     }, false); // Use bubble phase, not capture!
     
-    panelContainer.value.addEventListener('click', (e) => {
+    container.addEventListener('click', (e: any) => {
       console.log('Field Piping panel: click event in bubble phase, stopping propagation');
       e.stopPropagation();
     }, false); // Use bubble phase, not capture!
@@ -171,7 +173,7 @@ onUnmounted(() => {
   document.removeEventListener('mouseup', stopDrag);
 });
 
-const insertField = (e, fieldName) => {
+const insertField = (e: any, fieldName: string) => {
   console.log('insertField called for:', fieldName);
   console.log('focusedInput.value:', focusedInput.value);
   console.log('document.activeElement:', document.activeElement);
@@ -181,7 +183,7 @@ const insertField = (e, fieldName) => {
   e.stopPropagation();
   
   // Get the element that was active before the button was clicked
-  let input = focusedInput.value;
+  let input = focusedInput.value as any;
   
   // Fallback: check if there's an active editable element
   if (!input) {
@@ -235,8 +237,8 @@ const insertField = (e, fieldName) => {
       range = document.createRange();
       range.selectNodeContents(input);
       range.collapse(false); // Collapse to end
-      selection.removeAllRanges();
-      selection.addRange(range);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
     }
     
     // Delete the current selection (if any)
@@ -249,8 +251,8 @@ const insertField = (e, fieldName) => {
     // Move cursor after the inserted text
     range.setStartAfter(textNode);
     range.setEndAfter(textNode);
-    selection.removeAllRanges();
-    selection.addRange(range);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
     
     // Trigger input event so SurveyJS detects the change
     input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -394,8 +396,8 @@ const insertField = (e, fieldName) => {
           transition: all 0.15s ease;
           box-sizing: border-box;
         "
-        @mouseenter="$event.target.style.backgroundColor = '#e8f4f8'; $event.target.style.borderColor = '#1ab394';"
-        @mouseleave="$event.target.style.backgroundColor = '#f9f9f9'; $event.target.style.borderColor = '#e8e8e8';"
+        @mouseenter="($event.target as any).style.backgroundColor = '#e8f4f8'; ($event.target as any).style.borderColor = '#1ab394';"
+        @mouseleave="($event.target as any).style.backgroundColor = '#f9f9f9'; ($event.target as any).style.borderColor = '#e8e8e8';"
       >
         <span v-text="'{' + field + '}'"></span>
       </button>
